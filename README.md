@@ -1,58 +1,106 @@
-# Django ToDo list
+# Django ToDo App Kubernetes Deployment
 
-This is a todo list web application with basic features of most web apps, i.e., accounts/login, API, and interactive UI. To do this task, you will need:
+This guide covers the steps required to deploy and validate the Django ToDo App on a Kubernetes cluster.
 
-- CSS | [Skeleton](http://getskeleton.com/)
-- JS  | [jQuery](https://jquery.com/)
+## Prerequisites
 
-## Explore
+Ensure you have the following installed and configured:
+- Docker
+- Kubernetes
+- kubectl
+- kind (if using locally)
 
-Try it out by installing the requirements (the following commands work only with Python 3.8 and higher, due to Django 4):
+## Steps to Deploy
 
-```
-pip install -r requirements.txt
-```
+1. Clone the repository to your local machine.
+2. Navigate to the repository directory.
+3. Run the `bootstrap.sh` script to deploy all the required resources to the cluster.
 
-Create a database schema:
+    ```bash
+    ./bootstrap.sh
+    ```
 
-```
-python manage.py migrate
-```
+## Validate Deployment
 
-And then start the server (default is http://localhost:8000):
+### Validate MySQL StatefulSet
 
-```
-python manage.py runserver
-```
+1. Check if the MySQL StatefulSet is running:
 
-Now you can browse the [API](http://localhost:8000/api/) or start on the [landing page](http://localhost:8000/).
+    ```bash
+    kubectl get statefulset -n mysql
+    ```
 
-## Task
+2. Verify that all replicas are up and running:
 
-Create a kubernetes manifest for a pod which will containa ToDo app container:
+    ```bash
+    kubectl get pods -n mysql
+    ```
 
-1. Fork this repository.
-1. Use `kind` to spin up a cluster from a `cluster.yml` configuration file.
-1. Create a `statefulSet.yml` file for `StatefulSet` to manage MySQL.
-1. `StatefulSet` requirement:
-    1. `StatefulSet` should be deployed in a `mysql` namespace
-    1. `StatefulSet` should have 3 replicas
-    3. `StatefulSet` is reading sensetive data from a secret:
-        1. `MYSQL_ROOT_PASSWORD`
-        1. `MYSQL_USER`
-        1. `MYSQL_PASSWORD`
-    4. `StatefulSet` pods should have a `livenessProbe` and `readinessProbe`
-    5. `StatefulSet` pods should have a `requests` and `limits` for `CPU` and `Memory`
-    6. MySQL db should be inited from an `init.sql` that should be propagated as a mounted volume in `/docker-entrypoint-initdb.d`
-    7. `StatefulSet` should have `volumeClaimTemplates`
-    8. `StatefulSet` should have a headless `Service` to expose db pods
-1. `Deployment` requirments:
-    1. Update your application so it could connect to a 0 indexed db pod (mysql-0)
-    2. Application should read db connecion information from a `Secret`:
-        1. `NAME`
-        2. `USER`
-        3. `PASSWORD`
-        4. `HOST`
-1. `bootstrap.sh` should containe all the commands to deploy all the required resources in the cluster
-1. `README.md` should have instructuions on how to validate the changes
-1. Create PR with your changes and attach it for validation on a platform.
+3. Check if the headless service for MySQL is created:
+
+    ```bash
+    kubectl get svc -n mysql
+    ```
+
+### Validate ToDo App Deployment
+
+1. Check if the ToDo App Deployment is running:
+
+    ```bash
+    kubectl get deployment -n todoapp
+    ```
+
+2. Verify that the pods are up and running:
+
+    ```bash
+    kubectl get pods -n todoapp
+    ```
+
+3. Check if the services for ToDo App are created:
+
+    ```bash
+    kubectl get svc -n todoapp
+    ```
+
+### Connect to Database
+
+To check if the application is correctly connected to the `mysql-0` database pod, you can perform the following:
+
+1. Port-forward the ToDo App service to access it locally:
+
+    ```bash
+    kubectl port-forward svc/{ToDo-App-Service-Name} -n todoapp 8080:80
+    ```
+
+2. Access the application through a web browser or using curl:
+
+    ```bash
+    curl http://localhost:8080/
+    ```
+
+3. Check the application logs to confirm that it has successfully connected to the MySQL database:
+
+    ```bash
+    kubectl logs {todo-app-pod-name} -n todoapp
+    ```
+
+4. If the application has logic to validate the database connection on startup or through an API endpoint, you can invoke that to confirm connectivity.
+PS: You may have to rebuild the Dockerfile image, since at the moment the application works with the sqllite database, in order for it to use mysql you need to change the settings DATABASE config and add mysql to the requirements.txt file.
+
+## Troubleshooting
+
+If any of the resources are not running or in an error state, you can check the logs or describe the resource for more information:
+
+- Check logs:
+
+    ```bash
+    kubectl logs {pod-name} -n {namespace}
+    ```
+
+- Describe resource:
+
+    ```bash
+    kubectl describe {resource-type}/{resource-name} -n {namespace}
+    ```
+
+Replace `{ToDo-App-Service-Name}`, `{todo-app-pod-name}`, `{pod-name}`, `{namespace}`, and `{resource-type}/{resource-name}` with the actual names of your services, pods, and other resources.
