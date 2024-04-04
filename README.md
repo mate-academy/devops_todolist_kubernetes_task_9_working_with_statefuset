@@ -75,19 +75,19 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. Check if the MySQL StatefulSet is running:
 
     ```bash
-    kubectl get statefulset -n mysql
+    kubectl get statefulset -n todoapp
     ```
 
 2. Verify that all replicas are up and running:
 
     ```bash
-    kubectl get pods -n mysql
+    kubectl get pods -n todoapp
     ```
 
 3. Check if the headless service for MySQL is created:
 
     ```bash
-    kubectl get svc -n mysql
+    kubectl get svc -n todoapp
     ```
 
 ### Validate ToDo App Deployment
