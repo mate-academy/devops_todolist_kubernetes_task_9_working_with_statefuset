@@ -1,6 +1,5 @@
 #!/bin/bash
 
-kubectl create namespace mysql
 kubectl apply -f .infrastructure/namespace.yml
 
 kubectl apply -f .infrastructure/statefulSet.yml
