@@ -2,7 +2,6 @@
 
 kubectl apply -f .infrastructure/namespace.yml
 kubectl apply -f .infrastructure/statefulSet.yml
-kubectl get all -n mysql
 kubectl apply -f .infrastructure/configMap.yml
 kubectl apply -f .infrastructure/secret.yml
 kubectl apply -f .infrastructure/pv.yml
@@ -11,4 +10,3 @@ kubectl apply -f .infrastructure/clusterIp.yml
 kubectl apply -f .infrastructure/nodePort.yml
 kubectl apply -f .infrastructure/hpa.yml
 kubectl apply -f .infrastructure/deployment.yml
-kubectl get all -n todoapp
