@@ -4,7 +4,7 @@
 cd .infrastructure/
 
 # Create namespace mysql
-kubectl create namespace mysql
+kubectl apply -f namespace-mysql.yml
 
 # Create namespace todoapp
 kubectl apply -f namespace.yml
