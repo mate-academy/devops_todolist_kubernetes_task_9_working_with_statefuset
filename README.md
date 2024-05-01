@@ -80,11 +80,11 @@ kubectl apply -f deployment.yml
 kubectl apply -f hpa.yml
 
 Besides, in order to start mysql database with headless Service you should execute the next commands
-kubectl apply -f "$ST_NAMESPACE_FILE"
-kubectl apply -f "$ST_CONFIGMAP_FILE"
-kubectl apply -f "$ST_SECRET_FILE"
-kubectl apply -f "$ST_SERVICE_FILE"
-kubectl apply -f "$STATEFULSET_FILE"
+kubectl apply -f st-namespace.yml
+kubectl apply -f st-configMap.yml
+kubectl apply -f st-secret.yml
+kubectl apply -f st-service.yml
+kubectl apply -f st-statefulSet.yml
 After start the mysql you can check the pods
 kubectl get pods -n mysql
 Then, you can see the logs of the pods. In order to check successful creating and starting
