@@ -4,11 +4,7 @@ metadata:
   name: todoapp
   namespace: todoapp
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+  replicas: 1
   selector:
     matchLabels:
       app: todoapp
@@ -19,23 +15,9 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
-        volumeMounts:
-        - name: data
-          mountPath: /app/data
-        - name: app-secrets-volume
-          mountPath: "/app/secrets"
-          readOnly: true
-        - name: app-config-volume
-          mountPath: "/app/configs"
-          readOnly: true
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "150m"
-          limits:
-            memory: "256Mi"
-            cpu: "150m"
+        image: shcherbanvasyl499/todoapp:3.0.0
+        ports:
+        - containerPort: 8080
         env:
         - name: PYTHONUNBUFFERED
           valueFrom:
@@ -47,20 +29,30 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: api/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: api/ready
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: PASSWORD
+        - name: DB_HOST
+          value: mysql-0.mysql-headless.mysql.svc.cluster.local
+        volumeMounts:
+        - mountPath: /app/configs
+          name: app-config-volume
+        - mountPath: /app/data
+          name: data
+        - mountPath: /app/secrets
+          name: app-secrets-volume
       volumes:
       - name: data
         persistentVolumeClaim:
