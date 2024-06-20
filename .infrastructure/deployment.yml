@@ -73,13 +73,13 @@ spec:
           httpGet:
             path: api/health
             port: 8080
-          initialDelaySeconds: 60
+          initialDelaySeconds: 5
           periodSeconds: 5
         readinessProbe:
           httpGet:
             path: api/ready
             port: 8080
-          initialDelaySeconds: 5
+          initialDelaySeconds: 40
           periodSeconds: 5
       volumes:
       - name: data

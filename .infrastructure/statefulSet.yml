@@ -41,30 +41,30 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
-          subpath: mysql
+          subPath: mysql
         - name: mysql-db-init 
           mountPath: /docker-entrypoint-initdb.d
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping"]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["mysqladmin", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
       volumes:
       - name: mysql-db-init 
         configMap:
           name: mysql-db-init 
-      livenessProbe:
-        exec:
-          command: ["mysqladmin", "ping"]
-        initialDelaySeconds: 10
-        periodSeconds: 10
-        timeoutSeconds: 5
-      readinessProbe:
-        exec:
-          command: ["mysqladmin", "ping"]
-        initialDelaySeconds: 5
-        periodSeconds: 10
-        timeoutSeconds: 5
   volumeClaimTemplates:
   - metadata:
       name: data
     spec:
-      accessModes: ReadWriteMany
+      accessModes: ["ReadWriteOnce"]
       resources:
         requests:
           storage: 1Gi

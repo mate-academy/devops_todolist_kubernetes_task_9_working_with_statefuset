@@ -1,7 +1,7 @@
 #!/bin/bash
 
 kind delete cluster
-kind create cluster --config .infrastructure/cluster.yml
+kind create cluster --config ./cluster.yml
 kubectl apply -f .\.infrastructure\namespace.yml
 kubectl apply -f .\.infrastructure\confgiMap.yml
 kubectl apply -f .\.infrastructure\secret.yml
