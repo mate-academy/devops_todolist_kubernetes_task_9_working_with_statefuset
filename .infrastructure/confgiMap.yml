@@ -5,3 +5,19 @@ metadata:
   namespace: todoapp
 data:
   PYTHONUNBUFFERED: "1"
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-db-init
+  namespace: mysql
+data:
+  init.sql: |
+    GRANT ALL PRIVILAGES ON mysqldb.* to '@user1'@'%';
+    USE mysqldb; 
+    CREATE TABLE todolists (
+      TaskID INT AUTO_INCREMENT PRIMARY KEY,
+      Task VARCHAR(300)
+    )
