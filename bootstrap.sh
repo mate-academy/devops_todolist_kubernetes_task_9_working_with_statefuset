@@ -2,7 +2,11 @@
 
 kind create cluster --config=cluster.yml
 
-kubectl apply -f statefulSet.yml
+kubectl create namespace mysql
 
-kubectl create namespace todoapp
-kubectl apply -f deployment.yml
+kubectl apply -f ./.infrastructure/statefulSet.yml
+
+kubectl apply -f ./.infrastructure/secret.yml
+kubectl apply -f ./.infrastructure/mysql-secret.yml
+
+kubectl apply -f ./.infrastructure/deployment.yml

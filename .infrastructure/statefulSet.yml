@@ -1,3 +1,4 @@
+# statefulSet.yml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -33,54 +34,25 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: MYSQL_PASSWORD
-        ports:
-        - containerPort: 3306
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_HOST
         volumeMounts:
-        - name: mysql-storage
+        - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
         - name: init-scripts
           mountPath: /docker-entrypoint-initdb.d
-        livenessProbe:
-          tcpSocket:
-            port: 3306
-          initialDelaySeconds: 60
-          timeoutSeconds: 5
-        readinessProbe:
-          tcpSocket:
-            port: 3306
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-  volumeClaimTemplates:
-  - metadata:
-      name: mysql-storage
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: init-scripts
-    spec:
-      accessModes: ["ReadOnlyMany"]
-      resources:
-        requests:
-          storage: 1Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-headless
-  namespace: mysql
-spec:
-  clusterIP: None
-  selector:
-    app: mysql
-  ports:
-  - port: 3306
+      volumes:
+      - name: init-scripts
+        configMap:
+          name: mysql-init-scripts
+      volumeClaimTemplates:
+      - metadata:
+          name: mysql-persistent-storage
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 1Gi
