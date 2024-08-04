@@ -56,3 +56,9 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. `bootstrap.sh` should containe all the commands to deploy all the required resources in the cluster
 1. `README.md` should have instructuions on how to validate the changes
 1. Create PR with your changes and attach it for validation on a platform.
+
+не зрозумів як створюється користувач у бд
+не виходить зробити конекшн до бд, пише шо `ERROR 1045 (28000): Access denied for user 'app_user'@'10.1.1.98' (using password: YES)`
+намагався зробити конешн зовні (mysqlworkbench) через лінк `mysql-0.mysql.mysql.svc.cluster.local` але видає помилку шо немае хоста такого
+змінив додаток, але без конекшну міграції не робляться тому шо немає бд. Я закоментував ту строку але не знаю як це правильно зробити
+якщо зайти до поду через exec та запустити mysql видає помилку unknown host mysql-0.mysql хоча запускав без параметрів
