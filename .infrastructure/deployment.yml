@@ -47,6 +47,23 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: NAME 
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: PASSWORD
+        - name: DB_HOST
+          value: mysql-0.mysql.todoapp.svc.cluster.local
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -62,9 +79,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
       - name: app-secrets-volume
         secret:
           secretName: app-secret
