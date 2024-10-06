@@ -14,3 +14,4 @@ kubectl apply -f .infrastructure/hpa.yml
 kubectl apply -f .infrastructure/nodeport.yml
 kubectl apply -f .infrastructure/secret.yml
 kubectl apply -f .infrastructure/deployment.yml
+
