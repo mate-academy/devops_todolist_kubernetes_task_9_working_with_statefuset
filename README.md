@@ -55,4 +55,15 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
         4. `HOST`
 1. `bootstrap.sh` should containe all the commands to deploy all the required resources in the cluster
 1. `README.md` should have instructuions on how to validate the changes
+
+Check if mysql is running:
+
+```
+kubectl run mysql-client --image=mysql:8.0 -it -n mysql -- sh
+```
+
+```
+mysql -h mysql-0.mysql -u root --password=1234 -e "show tables from app_db;"
+```
+
 1. Create PR with your changes and attach it for validation on a platform.
