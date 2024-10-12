@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
+        image: nemereno/todoapp:3.0.0
         volumeMounts:
         - name: data
           mountPath: /app/data
@@ -47,6 +47,20 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: DB_HOST
+          value: "mysql-0.mysql"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        - name: DB_NAME
+          value: "todoapp"
         ports:
         - containerPort: 8080
         livenessProbe:
