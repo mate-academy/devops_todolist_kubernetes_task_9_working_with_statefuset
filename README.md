@@ -72,7 +72,6 @@ Check if statefulset is running
 
 ```kubectl get statefulset -n mysql```
 
-
 Check if pods in mysql namespace are running
 
 ```kubectl get pods -n mysql```
