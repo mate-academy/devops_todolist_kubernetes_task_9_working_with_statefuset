@@ -14,7 +14,7 @@ This script will create all necessary namespaces and apply the required manifest
 ## 3. Check if environment variables were saved successfully:
 ```bash
 kubectl get pods -n todoapp
-kubectl exec -it todoapp-<pod-name> -n todoapp -- printenv | grep -E 'DB_NAME|DB_USER|DB_PASSWORD|DB_HOST'
+kubectl exec -it todoapp <pod-name> -n todoapp -- printenv | grep -E 'DB_NAME|DB_USER|DB_PASSWORD|DB_HOST'
 ```
 This will check if the environment variables for the database connection (DB_NAME, DB_USER, DB_PASSWORD, DB_HOST) are set correctly in the TodoApp pod.
 

@@ -1,11 +1,16 @@
 #!/bin/bash
 
-kubectl create ns mysql
+#Create namespaces
 kubectl apply -f .infrastructure/namespace.yml
-kubectl apply -f .infrastructure/st-service.yml
-kubectl apply -f .infrastructure/st-secret.yml
-kubectl apply -f .infrastructure/st-configMap.yml
-kubectl apply -f .infrastructure/statefulSet.yml
+kubectl create ns mysql
+
+#Create mysql db and additional resources
+kubectl apply -f .infrastructure/mysql/st-service.yml
+kubectl apply -f .infrastructure/mysql/st-secret.yml
+kubectl apply -f .infrastructure/mysql/st-configMap.yml
+kubectl apply -f .infrastructure/mysql/statefulSet.yml
+
+#Create todoaapp and services
 kubectl apply -f .infrastructure/pv.yml
 kubectl apply -f .infrastructure/pvc.yml
 kubectl apply -f .infrastructure/clusterIp.yml
