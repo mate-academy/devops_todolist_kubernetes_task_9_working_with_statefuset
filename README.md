@@ -56,3 +56,25 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `bootstrap.sh` should contain all the commands to deploy all the required resources in the cluster
 1. `INSTRUCTION.md` should have instructions on how to validate the changes
 1. Create PR with your changes and attach it for validation on a platform.
+
+
+---
+validation
+
+1) todoapp is available at `localhost/30007`
+
+2) we can check that StatefulSet is running with `kubectl get statefulset -n mysql`
+
+3) we can check that mysql db pods are runnning with `kubectl get pods -n mysql -o wide`
+
+4) we can check that headless service is running with `kubectl get svc -n mysql`
+
+5) upon connecting to shell of `statefulset-for-mysql-0` we can find the `init.sql` in `/docker-entrypoint-initdb.d`
+
+6) we can see tht the database `mysqldb` was created through connecting to mysql client via
+
+    `kubectl exec -it statefulset-for-mysql-0 -n mysql -- mysql -uuser1 -p`
+
+    `user1Pass`
+
+    `SHOW DATABASES;`
