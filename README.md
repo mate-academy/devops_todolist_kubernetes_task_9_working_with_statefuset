@@ -56,3 +56,37 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `bootstrap.sh` should contain all the commands to deploy all the required resources in the cluster
 1. `INSTRUCTION.md` should have instructions on how to validate the changes
 1. Create PR with your changes and attach it for validation on a platform.
+
+kubectl config current-context
+In order to start the application you should execute in CLI the file bootstrap.sh
+After start the application will be access by url
+http://localhost:30007/
+After start the mysql you can check the pods
+kubectl get pods -n mysql
+Then, you can see the logs of the pods. In order to check successful creating and starting
+kubectl logs <pod`s_name> -n mysql
+
+OR
+You can start the application using the next commands
+kind create cluster --config cluster.yml
+kubectl apply -f namespace.yml
+kubectl apply -f clusterIp.yml
+kubectl apply -f nodeport.yml
+kubectl apply -f configMap.yml
+kubectl apply -f secret.yml
+kubectl apply -f pv.yml
+kubectl apply -f pvc.yml
+kubectl apply -f deployment.yml
+kubectl apply -f hpa.yml
+
+Besides, in order to start mysql database with headless Service you should execute the next commands
+kubectl apply -f st-namespace.yml
+kubectl apply -f st-configMap.yml
+kubectl apply -f st-secret.yml
+kubectl apply -f st-service.yml
+kubectl apply -f st-statefulSet.yml
+After start the mysql you can check the pods
+kubectl get pods -n mysql
+Then, you can see the logs of the pods. In order to check successful creating and starting
+kubectl logs <pod`s_name> -n mysql
+
