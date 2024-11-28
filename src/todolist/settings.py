@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+DB_NAME = os.environ.get("DB_NAME","")
+DB_USER = os.environ.get("DB_USER","")
+DB_PASSWORD = os.environ.get("DB_PASSWORD","")
+DB_HOST = os.environ.get("DB_HOST","")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -62,19 +65,19 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
-
     # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "HOST": "FVFFM3F5Q05N", 
-    #     "PORT": 3306,
-    #     "NAME":"tododb",
-    #     "PASSWORD": "my-secret-pw", 
-    #     "USER": "root",
-    # }
+    #    "ENGINE": "django.db.backends.sqlite3",
+    #    "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+    #}
+
+    "default": {
+         "ENGINE": "django.db.backends.mysql",
+         "HOST": DB_HOST, 
+         "PORT": 3306,
+         "NAME":DB_NAME,
+         "PASSWORD": DB_PASSWORD, 
+         "USER": DB_USER,
+    }
 }
 
 # Internationalization
