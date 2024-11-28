@@ -98,14 +98,17 @@ kubectl describe statefulset mysql -n mysql
 kubectl get all -n todoapp
 
 # 2.2 Verify the todoapp pods are running:
+# Check if pods in mysql namespace are running
 
 kubectl get pods -n todoapp
+kubectl get pods -n mysql
 
 # 3.3 Find the NodePort or ClusterIP for the application:
+# Check todo App services:
 
 kubectl get svc -n todoapp
+kubectl get svc -n mysql
 
 # 3.4 Access the application using the NodePort service in a browser or API testing tool:
 
 http://<node-ip>:<nodeport>
-
