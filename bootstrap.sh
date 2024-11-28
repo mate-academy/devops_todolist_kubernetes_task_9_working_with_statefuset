@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 # Create namespaces
 echo "Creating namespaces..."
 kubectl create namespace mysql || echo "Namespace 'mysql' already exists."
