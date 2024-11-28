@@ -56,3 +56,56 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. `bootstrap.sh` should containe all the commands to deploy all the required resources in the cluster
 1. `README.md` should have instructuions on how to validate the changes
 1. Create PR with your changes and attach it for validation on a platform.
+
+# -----------------------------------
+
+# Run the bootstrap script:
+
+./bootstrap.sh
+
+# This script will:
+
+#   Create the mysql namespace.
+#   Deploy all MySQL-related resources:
+#          ConfigMap
+#          Secrets
+#          Service
+#          StatefulSet
+#   Check the status of MySQL resources.
+#   Deploy all todoapp resources:
+#          ConfigMap
+#          Secrets
+#          PersistentVolume and PersistentVolumeClaim
+#          Services (ClusterIP and NodePort)
+#          Horizontal Pod Autoscaler (HPA)
+#          Deployment
+#   Check the status of todoapp resources.
+
+# 1. Check the created resources for MySQL:
+
+kubectl get all -n mysql
+
+# 2. Verify MySQL pods are running:
+
+kubectl get pods -n mysql
+
+# 3. Confirm the StatefulSet is configured properly:
+
+kubectl describe statefulset mysql -n mysql
+
+# 1.1 Check the created resources for todoapp:
+
+kubectl get all -n todoapp
+
+# 2.2 Verify the todoapp pods are running:
+
+kubectl get pods -n todoapp
+
+# 3.3 Find the NodePort or ClusterIP for the application:
+
+kubectl get svc -n todoapp
+
+# 3.4 Access the application using the NodePort service in a browser or API testing tool:
+
+http://<node-ip>:<nodeport>
+
