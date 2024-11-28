@@ -56,3 +56,21 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `bootstrap.sh` should contain all the commands to deploy all the required resources in the cluster
 1. `INSTRUCTION.md` should have instructions on how to validate the changes
 1. Create PR with your changes and attach it for validation on a platform.
+
+## Make this script executable:
+$chmod +x bootstrap.sh
+$./bootstrap.sh
+
+## Validation Instructions
+$kubectl get statefulsets -n mysql
+$kubectl describe statefulset mysql -n mysql
+$kubectl get pods -n mysql
+
+##Verify Database Connection
+$kubectl run mysql-client --image=mysql:8.0 -it --rm --namespace=mysql -- mysql -h mysql-0.mysql-headless.mysql.svc.cluster.local -u root -p1234
+
+## Check Mounted Volumes
+$kubectl exec mysql-0 -n mysql -- ls /docker-entrypoint-initdb.d
+
+## Check Environment Variables
+kubectl exec mysql-0 -n mysql -- printenv | grep MYSQL
