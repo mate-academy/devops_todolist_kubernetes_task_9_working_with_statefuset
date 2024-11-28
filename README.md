@@ -56,3 +56,96 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `bootstrap.sh` should contain all the commands to deploy all the required resources in the cluster
 1. `INSTRUCTION.md` should have instructions on how to validate the changes
 1. Create PR with your changes and attach it for validation on a platform.
+
+---
+
+### 1. Deploy
+Use:
+```bash
+./bootstrap.sh
+```
+```yaml
+--creating namespaces--
+namespace/todoapp created
+namespace/mysql created
+--creating mysql db--
+configmap/mysql-config created
+secret/mysql-secrets created
+service/mysql created
+statefulset.apps/mysql created
+--creating app--
+configmap/app-config created
+secret/app-secret created
+service/todoapp-service created
+service/todoapp-nodeport created
+persistentvolume/pv-data created
+persistentvolumeclaim/pvc-data created
+deployment.apps/todoapp created
+horizontalpodautoscaler.autoscaling/todoapp created
+```
+### 2. Validation
+
+1. Check the StatefulSet and its pods:
+```bash
+kubectl get statefulset -n mysql -o wide
+```
+```yaml
+NAME    READY   AGE     CONTAINERS   IMAGES
+mysql   3/3     2m52s   mysql        mysql:8.0
+```
+```bash
+kubectl get pods -n mysql
+```
+```yaml
+NAME      READY   STATUS    RESTARTS   AGE
+mysql-0   1/1     Running   0          3m43s
+mysql-1   1/1     Running   0          3m27s
+mysql-2   1/1     Running   0          3m8s
+```
+
+2. Verify that the ConfigMap data is mounted as files:
+
+```bash
+kubectl exec -it mysql-0 -n mysql -- cat ./docker-entrypoint-initdb.d/init.sql
+```
+```yaml
+GRANT ALL PRIVILEGES ON mysql_db.* TO 'mysqluser'@'%';
+```
+
+3. Verify initialization:
+
+```bash
+kubectl exec -it mysql-0 -n mysql -- mysql -umysqluser -p
+```
+```yaml
+Enter password: 
+```
+```bash
+userpw
+```
+```yaml
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 1292
+Server version: 8.0.38 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+```
+```bash
+SHOW DATABASES;
+```
+```yaml
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql_db           |
+| performance_schema |
++--------------------+
+3 rows in set (0.04 sec)
+```
