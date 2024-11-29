@@ -47,17 +47,26 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: DB_HOST
+          value: "mysql-service"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: DB_USER
         ports:
         - containerPort: 8080
         livenessProbe:
           httpGet:
-            path: api/health
+            path: /api/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: api/ready
+            path: /api/ready
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
