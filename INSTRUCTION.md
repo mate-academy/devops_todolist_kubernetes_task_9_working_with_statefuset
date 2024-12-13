@@ -1,31 +1,45 @@
-# Persistent Volumes and Stateful Sets for TodoApp
-## 1. Create a Kind cluster:
-```bash
-kind create cluster --config cluster.yml
-```
-This command will create a new Kind cluster based on the cluster.yml configuration file. You will automatically be switched to the new cluster if the command is successful.
+# Deployment and Validation Instructions
 
-## 2. Deploy the app and additional resources.
-```bash
-./bootstrap.sh
-```
-This script will create all necessary namespaces and apply the required manifests for both the app and the database.
+## Prerequisites
+1. Kubernetes cluster set up using Kind.
+2. Replace `<your-dockerhub-username>` with your Docker Hub username.
 
-## 3. Check if environment variables were saved successfully:
-```bash
-kubectl get pods -n todoapp
-kubectl exec -it todoapp <pod-name> -n todoapp -- printenv | grep -E 'DB_NAME|DB_USER|DB_PASSWORD|DB_HOST'
-```
-This will check if the environment variables for the database connection (DB_NAME, DB_USER, DB_PASSWORD, DB_HOST) are set correctly in the TodoApp pod.
+---
 
-## 4. Verify the StatefulSet and its pods:
-```bash
-kubectl exec -it mysql-0 -n mysql -- sh
-kubectl get pods -n mysql -o wide
-```
-You should see 3 replicas with pod names mysql-0, mysql-1, and mysql-2 in the mysql namespace.
+## Steps to Deploy
 
-## 5. Check the #0 pod of the StatefulSet and see the tables:
+1. Run the `bootstrap.sh` script:
 ```bash
-kubectl exec -it mysql-0 -n mysql -- mysql -h mysql-0 -u root --password=myrootpw -e "SHOW DATABASES;"
+   ./bootstrap.sh
 ```
+2. Verify that resources are created:
+````
+kubectl get statefulsets -n mysql
+kubectl get pods -n mysql
+kubectl get pods -n mateapp
+````
+
+## Validation Steps
+1. Validate MySQL StatefulSet
+   - Ensure 3 replicas are running:
+        ````
+        kubectl get pods -n mysql
+        ````
+   - Validate readiness and liveness:
+        ````
+        kubectl describe pod <pod-name> -n mysql
+        ````
+     
+2. Validate ToDo App
+   - Port-forward the ToDo app
+        ````
+        kubectl port-forward deployment/todoapp 8000:8000 -n mateapp
+        ````  
+   - Access the app at http://localhost:8080
+
+
+3. Database Connection
+    - Check logs to confirm the app connects to mysql-0:
+        ````
+        kubectl logs <todoapp-pod-name> -n mateapp
+        ````

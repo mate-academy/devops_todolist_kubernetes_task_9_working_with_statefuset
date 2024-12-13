@@ -13,7 +13,7 @@ kubectl apply -f .infrastructure/mysql/statefulSet.yml
 kubectl apply -f .infrastructure/pv.yml
 kubectl apply -f .infrastructure/pvc.yml
 kubectl apply -f .infrastructure/clusterIp.yml
-kubectl apply -f .infrastructure/confgiMap.yml
+kubectl apply -f .infrastructure/configMap.yml
 kubectl apply -f .infrastructure/hpa.yml
 kubectl apply -f .infrastructure/nodeport.yml
 kubectl apply -f .infrastructure/secret.yml

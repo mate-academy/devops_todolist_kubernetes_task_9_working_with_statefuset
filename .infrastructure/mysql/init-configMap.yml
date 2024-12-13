@@ -5,6 +5,5 @@ metadata:
   namespace: mysql
 data:
   init.sql: |
-    CREATE USER 'mysqluser'@'%' IDENTIFIED BY 'P@ssw0rd';
     GRANT ALL PRIVILEGES ON app_db.* TO 'mysqluser'@'%';
     USE app_db;
