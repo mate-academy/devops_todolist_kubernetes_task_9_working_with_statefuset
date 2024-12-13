@@ -33,7 +33,7 @@ kubectl get pods -n mateapp
 2. Validate ToDo App
    - Port-forward the ToDo app
         ````
-        kubectl port-forward deployment/todoapp 8000:8000 -n mateapp
+        kubectl port-forward deployment/todoapp 8080:8080 -n mateapp
         ````  
    - Access the app at http://localhost:8080
 
