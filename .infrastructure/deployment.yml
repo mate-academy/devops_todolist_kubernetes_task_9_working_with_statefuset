@@ -37,11 +37,31 @@ spec:
             memory: "256Mi"
             cpu: "150m"
         env:
-        - name: PYTHONUNBUFFERED
+        - name: DB_NAME
           valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: PYTHONUNBUFFERED
+            secretKeyRef:
+              name: app-secret
+              key: NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: HOST
+        - name: DB_CONNECTION
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: DB_CONNECTION
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
