@@ -47,6 +47,28 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: HOST
+        - name: DATABASE_URL
+          value: "mysql+mysqlconnector://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST)/$(DB_NAME)"
         ports:
         - containerPort: 8080
         livenessProbe:
