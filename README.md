@@ -56,3 +56,56 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `bootstrap.sh` should contain all the commands to deploy all the required resources in the cluster
 1. `INSTRUCTION.md` should have instructions on how to validate the changes
 1. Create PR with your changes and attach it for validation on a platform.
+
+# Manual
+## Steps to Deploy
+
+1. Clone the repository to your local machine.
+2. Navigate to the repository directory.
+3. Run the `bootstrap.sh` script to deploy all the required resources to the cluster.
+
+    ```bash
+    ./bootstrap.sh
+    ```
+
+## Validate Deployment
+
+### Validate MySQL StatefulSet
+
+1. Check if the MySQL StatefulSet is running:
+
+    ```bash
+    kubectl get statefulset -n todoapp
+    ```
+
+2. Verify that all replicas are up and running:
+
+    ```bash
+    kubectl get pods -n todoapp
+    ```
+
+3. Check if the headless service for MySQL is created:
+
+    ```bash
+    kubectl get svc -n todoapp
+    ```
+
+### Validate ToDo App Deployment
+
+1. Check if the ToDo App Deployment is running:
+
+    ```bash
+    kubectl get deployment -n todoapp
+    ```
+
+2. Verify that the pods are up and running:
+
+    ```bash
+    kubectl get pods -n todoapp
+    ```
+
+3. Check if the services for ToDo App are created:
+
+    ```bash
+    kubectl get svc -n todoapp
+    ```
