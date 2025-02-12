@@ -19,24 +19,45 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
+        image: trinida/todoapp:2.1.1
+        imagePullPolicy: Always
         volumeMounts:
         - name: data
           mountPath: /app/data
         - name: app-secrets-volume
-          mountPath: "/app/secrets"
+          mountPath: /src/secrets
           readOnly: true
         - name: app-config-volume
-          mountPath: "/app/configs"
+          mountPath: /src/configs
           readOnly: true
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "150m"
+            memory: 512Mi
+            cpu: 500m
           limits:
-            memory: "256Mi"
-            cpu: "150m"
+            memory: 1Gi
+            cpu: 800m
         env:
+        - name: DB_MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: DB_MYSQL_DATABASE
+        - name: DB_MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: DB_MYSQL_PASSWORD
+        - name: DB_MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: DB_MYSQL_USER
+        - name: DB_HOST_NAME
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: DB_HOST_NAME
         - name: PYTHONUNBUFFERED
           valueFrom:
             configMapKeyRef:
@@ -47,13 +68,18 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+#        - name: CONNECTION_STRING
+#          valueFrom:
+#            secretKeyRef:
+#              name: app-secret
+#              key: CONNECTION_STRING
         ports:
         - containerPort: 8080
         livenessProbe:
           httpGet:
             path: api/health
             port: 8080
-          initialDelaySeconds: 60
+          initialDelaySeconds: 100
           periodSeconds: 5
         readinessProbe:
           httpGet:

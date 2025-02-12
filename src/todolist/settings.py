@@ -62,19 +62,19 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
-
     # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "HOST": "FVFFM3F5Q05N", 
-    #     "PORT": 3306,
-    #     "NAME":"tododb",
-    #     "PASSWORD": "my-secret-pw", 
-    #     "USER": "root",
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     # }
+
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "HOST": os.getenv("DB_HOST_NAME",""),
+        "PORT": 3306,
+        "NAME":os.getenv("DB_MYSQL_DATABASE",""),
+        "PASSWORD": os.getenv("DB_MYSQL_PASSWORD",""),
+        "USER": os.getenv("DB_MYSQL_USER",""),
+    }
 }
 
 # Internationalization

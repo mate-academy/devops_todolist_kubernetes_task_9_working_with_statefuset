@@ -1,0 +1,57 @@
+# cluster.yml
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+
+# Патчи для конфигурации kubeadm
+kubeadmConfigPatches:
+  - |
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
+    evictionHard:
+      nodefs.available: "0%"  # Отключает вытеснение подов при нехватке места на диске
+
+# JSON 6902 патчи для kubeadm
+kubeadmConfigPatchesJSON6902:
+  - group: kubeadm.k8s.io
+    version: v1beta3
+    kind: ClusterConfiguration
+    patch: |
+      - op: add
+        path: /apiServer/certSANs/-
+        value: my-hostname  # Добавляет SAN (Subject Alternative Name) для сертификата API-сервера
+
+# Конфигурация узлов
+nodes:
+  # Control Plane (Master) узел
+  - role: control-plane
+    extraMounts:
+      - hostPath: /tmp  # Монтирует директорию /tmp с хоста
+        containerPath: /data  # Внутри контейнера будет доступна как /data
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"  # Добавляет метку для Ingress
+    extraPortMappings:
+      - containerPort: 30007  # Пробрасывает порт 30007 контейнера на хост
+        hostPort: 30007
+      - containerPort: 30008  # Пробрасывает порт 30008 контейнера на хост
+        hostPort: 30008
+      - containerPort: 80  # Пробрасывает порт 80 (HTTP) контейнера на хост
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443  # Пробрасывает порт 443 (HTTPS) контейнера на хост
+        hostPort: 443
+        protocol: TCP
+
+  # Worker узлы
+  - role: worker
+    extraMounts:
+      - hostPath: /tmp  # Монтирует директорию /tmp с хоста
+        containerPath: /data  # Внутри контейнера будет доступна как /data
+
+  - role: worker
+    extraMounts:
+      - hostPath: /tmp  # Монтирует директорию /tmp с хоста
+        containerPath: /data  # Внутри контейнера будет доступна как /data

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-conf
+  namespace: mysql
+data:
+  init.sql: | 
+    GRANT ALL PRIVILEGES ON ${DB_MYSQL_DATABASE}.* TO '${DB_MYSQL_USER}'@'%';
+    USE ${DB_MYSQL_DATABASE};
+    CREATE TABLE lists {
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      value VARCHAR(255) NOT NULL
+    };
