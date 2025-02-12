@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-scripts
+  namespace: mysql
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS tododb;
+    CREATE USER 'todoappuser'@'%' IDENTIFIED BY '';
+    GRANT ALL PRIVILEGES ON tododb.* TO 'todoappuser'@'%';
+    FLUSH PRIVILEGES;
+    
