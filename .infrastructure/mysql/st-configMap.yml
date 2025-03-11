@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: mysql
+data:
+  init.sql: |
+    GRANT ALL PRIVILEGES ON todoapp_db TO 'app_client'@'%';
+    USE todoapp_db;
+    CREATE TABLE notes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        value VARCHAR(200)
+    );
