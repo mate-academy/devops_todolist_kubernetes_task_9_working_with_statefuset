@@ -63,8 +63,12 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.mysql",
+        "HOST": os.environ.get("MYSQL_HOST",""),
+        "PORT": 3306,
+        "NAME": os.environ.get("MYSQL_DATABASE_NAME",""),
+        "PASSWORD": os.environ.get("MYSQL_PASSWORD",""),
+        "USER": os.environ.get("MYSQL_USER","")
     }
 
     # "default": {
