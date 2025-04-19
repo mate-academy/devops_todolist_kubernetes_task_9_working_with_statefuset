@@ -1,53 +1,59 @@
-# this config file contains all config fields with comments
-# NOTE: this is not a particularly useful config file
+# API version and Kind for the cluster configuration file
 apiVersion: kind.x-k8s.io/v1alpha4
 kind: Cluster
-# patch the generated kubeadm config with some extra settings
+
+# Optional: patch the kubeadm configuration with extra settings for the kubelet
 kubeadmConfigPatches:
-- |
-  apiVersion: kubelet.config.k8s.io/v1beta1
-  kind: KubeletConfiguration
-  evictionHard:
-    nodefs.available: "0%"
-# patch it further using a JSON 6902 patch
-kubeadmConfigPatchesJSON6902:
-- group: kubeadm.k8s.io
-  version: v1beta3
-  kind: ClusterConfiguration
-  patch: |
-    - op: add
-      path: /apiServer/certSANs/-
-      value: my-hostname
-# 2 control plane node and 2 workers
-nodes:
-# the control plane node config
-- role: control-plane
-  extraMounts:
-    - hostPath: /tmp
-      containerPath: /data
-  kubeadmConfigPatches:
   - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress-ready=true"
-  extraPortMappings:
-  - containerPort: 30007
-    hostPort: 30007
-  - containerPort: 30008
-    hostPort: 30008
-  - containerPort: 80
-    hostPort: 80
-    protocol: TCP
-  - containerPort: 443
-    hostPort: 443
-    protocol: TCP
-# the two workers
-- role: worker
-  extraMounts:
-    - hostPath: /tmp
-      containerPath: /data
-- role: worker
-  extraMounts:
-    - hostPath: /tmp
-      containerPath: /data
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
+    evictionHard:
+      nodefs.available: "0%" # This setting defines the eviction threshold for disk space
+
+# Optional: patch the kubeadm configuration using a JSON 6902 patch
+kubeadmConfigPatchesJSON6902:
+  - group: kubeadm.k8s.io
+    version: v1beta3
+    kind: ClusterConfiguration
+    patch: |
+      - op: add
+        path: /apiServer/certSANs/-
+        value: my-hostname  # Adding an extra Subject Alternative Name to the API server certificate
+
+# Node configuration (2 control plane nodes and 2 worker nodes)
+
+nodes:
+  # Control plane node configuration
+  - role: control-plane
+    extraMounts:
+      - hostPath: /tmp
+        containerPath: /data  # Mounting /tmp from the host to /data in the container
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true" # Adding a label to the node for ingress readiness
+    extraPortMappings:
+      - containerPort: 30007
+        hostPort: 30007 # Port mapping for container to host
+      - containerPort: 30008
+        hostPort: 30008 # Another port mapping for the container
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP # Exposing HTTP (port 80)
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP # Exposing HTTPS (port 443)
+
+  # Worker node 1 configuration
+  - role: worker
+    extraMounts:
+      - hostPath: /tmp
+        containerPath: /data  # Mounting /tmp from the host to /data in the container
+
+  # Worker node 2 configuration
+  - role: worker
+    extraMounts:
+      - hostPath: /tmp
+        containerPath: /data  # Mounting /tmp from the host to /data in the container

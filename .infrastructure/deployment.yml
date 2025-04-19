@@ -71,3 +71,15 @@ spec:
       - name: app-config-volume
         configMap:
           name: app-config
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: todo-db-secret
+  namespace: default
+type: Opaque
+data:
+  NAME: <base64-encoded-db-name>
+  USER: <base64-encoded-db-user>
+  PASSWORD: <base64-encoded-db-password>
+  HOST: <base64-encoded-db-host>
