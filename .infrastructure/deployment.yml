@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: <YOUR_IMAGE>
+        image: ikulyk404/todoapp:3.0.0
         ports:
         - containerPort: 8000
         env:
