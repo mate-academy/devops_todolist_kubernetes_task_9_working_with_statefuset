@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from base64 import b64decode
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -63,18 +64,13 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("MYSQL_DATABASE", "tododb"),
+        "USER": os.getenv("MYSQL_USER", "user"),
+        "PASSWORD": os.getenv("MYSQL_PASSWORD", "my-pass"),
+        "HOST": os.getenv("MYSQL_HOST", "mysql-0.mysql.mysql.svc.cluster.local"),
+        "PORT": 3306,
     }
-
-    # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "HOST": "FVFFM3F5Q05N", 
-    #     "PORT": 3306,
-    #     "NAME":"tododb",
-    #     "PASSWORD": "my-secret-pw", 
-    #     "USER": "root",
-    # }
 }
 
 # Internationalization
