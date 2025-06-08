@@ -4,11 +4,7 @@ metadata:
   name: todoapp
   namespace: todoapp
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+  replicas: 1
   selector:
     matchLabels:
       app: todoapp
@@ -19,55 +15,46 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
-        volumeMounts:
-        - name: data
-          mountPath: /app/data
-        - name: app-secrets-volume
-          mountPath: "/app/secrets"
-          readOnly: true
-        - name: app-config-volume
-          mountPath: "/app/configs"
-          readOnly: true
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "150m"
-          limits:
-            memory: "256Mi"
-            cpu: "150m"
+        image: <YOUR_IMAGE>
+        ports:
+        - containerPort: 8000
         env:
-        - name: PYTHONUNBUFFERED
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: PYTHONUNBUFFERED
-        - name: SECRET_KEY
+        - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: app-secret
-              key: SECRET_KEY
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: api/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 5
+              name: db-credentials
+              key: MYSQL_DATABASE
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: MYSQL_PASSWORD
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: MYSQL_HOST
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
         readinessProbe:
           httpGet:
-            path: api/ready
-            port: 8080
+            path: /health/
+            port: 8000
           initialDelaySeconds: 5
-          periodSeconds: 5
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
-      - name: app-secrets-volume
-        secret:
-          secretName: app-secret
-      - name: app-config-volume
-        configMap:
-          name: app-config
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health/
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
