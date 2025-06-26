@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb
+  namespace: mysql
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS ShopDB;
+    CREATE USER IF NOT EXISTS 'appuser'@'%' IDENTIFIED BY 'secretpass';
+    GRANT ALL ON ShopDB.* TO 'appuser'@'%';
