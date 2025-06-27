@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: todo-app-secrets
+type: Opaque
+stringData:
+  # Замініть на реальні значення, або згенеруйте їх.
+  # Ці значення будуть використовуватися Django-додатком для підключення до MySQL.
+  SECRET_KEY: "=q-6975cau83%ms!znj8k2c0g9$mxaj!)t)fd==s=fnym348qp" # Встановіть тут унікальний і складний ключ
+  DEBUG: "True" # Для розробки, для продакшену має бути "False"
+  MYSQL_DATABASE_NAME: "tododb"
+  MYSQL_USER: "leoleiden" # Має відповідати користувачу в init.sql та mysql-secrets
+  MYSQL_PASSWORD: "7410" # Має відповідати паролю в init.sql та mysql-secrets
+  MYSQL_HOST: mysql-0.mysql.mysql.svc.cluster.local # FQDN для підключення до першого пода MySQL StatefulSet
+  MYSQL_PORT: "3306"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-deployment
+  labels:
+    app: todo-app
+spec:
+  replicas: 1 # Залишаємо 1 для простоти, щоб уникнути конфліктів міграцій
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+      - name: todo-app
+        image: leoleiden/todo-app:latest # Використовуйте ваше ім'я користувача Docker Hub
+        ports:
+        - containerPort: 8080 # <-- Змінено на 8080 для консистентності
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: todo-app-secrets
+              key: SECRET_KEY
+        - name: DEBUG
+          valueFrom:
+            secretKeyRef:
+              name: todo-app-secrets
+              key: DEBUG
+        - name: MYSQL_DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: todo-app-secrets
+              key: MYSQL_DATABASE_NAME
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: todo-app-secrets
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todo-app-secrets
+              key: MYSQL_PASSWORD
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: todo-app-secrets
+              key: MYSQL_HOST
+        - name: MYSQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: todo-app-secrets
+              key: MYSQL_PORT
+        command: ["/bin/sh"]
+        args: ["-c", "python manage.py makemigrations lists && python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8080"] # <-- Розкоментовано та додано --noinput для автоматичних міграцій
+        livenessProbe:
+          httpGet:
+            path: /api/health # Переконайтеся, що цей шлях існує у вашому додатку
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/ready # Переконайтеся, що цей шлях існує
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
