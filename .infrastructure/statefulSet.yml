@@ -40,7 +40,6 @@ spec:
               containerPort: 3306
           volumeMounts:
             - mountPath: /var/lib/mysql
-              subPath: mysql
               name: data
           resources:
             requests:

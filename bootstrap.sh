@@ -14,15 +14,15 @@ kubectl apply -f .infrastructure/pv.yml
 kubectl apply -f .infrastructure/pvc.yml
 
 # Creating secret and configMap
-kubectl apply -f .infrastructure/secret.yml
-kubectl apply -f .infrastructure/mysql-configMap.yml
+kubectl apply -f .infrastructure/st-secret.yml
+kubectl apply -f .infrastructure/st-configMap.yml
 kubectl apply -f .infrastructure/confgiMap.yml
 
 # Creating statefulSet for mysql
 kubectl apply -f .infrastructure/statefulSet.yml
 
 # Creating headless service for mysql
-kubectl apply -f .infrastructure/headless.yml
+kubectl apply -f .infrastructure/st-service.yml
 
 # Creating deployment
 kubectl apply -f .infrastructure/deployment.yml
