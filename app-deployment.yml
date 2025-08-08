@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/example/django-todo:latest # <-- за потреби заміни на реальний образ вашого репо
+          image: ghcr.io/example/django-todo:latest # <-- заміни на реальний образ вашого репо при потребі
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
@@ -41,6 +41,22 @@ spec:
                 secretKeyRef:
                   name: todo-db-credentials
                   key: HOST
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
           resources:
             requests:
               cpu: "100m"

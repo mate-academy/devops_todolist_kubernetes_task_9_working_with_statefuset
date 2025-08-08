@@ -1,4 +1,3 @@
 CREATE DATABASE IF NOT EXISTS todoapp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS 'todo_user'@'%' IDENTIFIED BY 'todo_pass_123';
 GRANT ALL PRIVILEGES ON todoapp.* TO 'todo_user'@'%';
 FLUSH PRIVILEGES;
