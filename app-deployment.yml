@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  labels:
+    app: todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/example/django-todo:latest # <-- за потреби заміни на реальний образ вашого репо
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NAME
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-credentials
+                  key: NAME
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-credentials
+                  key: USER
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-credentials
+                  key: PASSWORD
+            - name: HOST
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-credentials
+                  key: HOST
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
