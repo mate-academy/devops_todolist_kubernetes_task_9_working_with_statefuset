@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb
+  namespace: mysql
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS mydatabase;
+    -- Додаткові SQL команди для ініціалізації бази
