@@ -76,7 +76,7 @@ kubectl describe svc mysql -n mysql
 kubectl get pvc -n mysql
 ```
 **Expected:**
-- 3 PVCs should exist: `mysql-mysql-0`, `mysql-mysql-1`, `mysql-mysql-2`
+- 3 PVCs should exist: `data-mysql-0`, `data-mysql-1`, `data-mysql-2`
 - All should be in `Bound` status with 2Gi storage
 
 ### 5. Validate MySQL Configuration
@@ -235,3 +235,4 @@ kubectl get pods -n mysql -w
 **Expected:**
 - Pods should scale down in reverse order (mysql-2, mysql-1)
 - Pods should scale up in order (mysql-1, then mysql-2)
+
