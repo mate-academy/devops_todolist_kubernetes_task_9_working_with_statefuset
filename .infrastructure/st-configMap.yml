@@ -5,9 +5,8 @@ metadata:
   namespace: mysql
 data:
   init.sql: |
-    CREATE DATABASE app_db;
-    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'%';
-    USE app_db;
+    GRANT ALL PRIVILEGES ON tododb.* TO 'app_user'@'%';
+    USE tododb;
     CREATE TABLE counter (
         id INT AUTO_INCREMENT PRIMARY KEY,
         value INT    
