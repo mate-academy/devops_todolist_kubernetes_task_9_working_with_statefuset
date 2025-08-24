@@ -1,73 +1,53 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-db-secret
+  namespace: default
+type: Opaque
+data:
+  NAME: dG9kb2xpc3Q=
+  USER: dG9kb3VzZXI=
+  PASSWORD: dG9kb3Bhc3MxMjM=
+  HOST: bXlzcWwtMC5teXNxbC1oZWFkbGVzcy5teXNxbC5zdmMuY2x1c3Rlci5sb2NhbA==
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todoapp
-  namespace: todoapp
+  name: todolist-app
+  namespace: default
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+  replicas: 1
   selector:
     matchLabels:
-      app: todoapp
+      app: todolist-app
   template:
     metadata:
       labels:
-        app: todoapp
+        app: todolist-app
     spec:
       containers:
-      - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
-        volumeMounts:
-        - name: data
-          mountPath: /app/data
-        - name: app-secrets-volume
-          mountPath: "/app/secrets"
-          readOnly: true
-        - name: app-config-volume
-          mountPath: "/app/configs"
-          readOnly: true
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "150m"
-          limits:
-            memory: "256Mi"
-            cpu: "150m"
+      - name: todolist-app
+        image: python:3.9-slim
+        ports:
+        - containerPort: 8000
         env:
-        - name: PYTHONUNBUFFERED
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: PYTHONUNBUFFERED
-        - name: SECRET_KEY
+        - name: DB_NAME
           valueFrom:
             secretKeyRef:
-              name: app-secret
-              key: SECRET_KEY
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: api/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: api/ready
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
-      - name: app-secrets-volume
-        secret:
-          secretName: app-secret
-      - name: app-config-volume
-        configMap:
-          name: app-config
+              name: app-db-secret
+              key: NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-db-secret
+              key: USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-db-secret
+              key: PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: app-db-secret
+              key: HOST
