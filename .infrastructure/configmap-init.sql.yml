@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb
+  namespace: mysql
+data:
+  init.sql: |
+    -- initial DB and table
+    CREATE DATABASE IF NOT EXISTS todolist;
+    USE todolist;
