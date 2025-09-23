@@ -43,20 +43,23 @@ spec:
             mountPath: /var/lib/mysql
             subPath: mysql
           - name: mysql-config
-            mountPath: /docker-entrypoint_initdb.d
+            mountPath: /docker-entrypoint-initdb.d
         resources:
           requests:
             cpu: 500m
             memory: 1Gi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
         livenessProbe:
           exec:
-            command: ["mysqladmin", "ping"]
+            command: ["sh", "-c", "mysqladmin ping -p$MYSQL_ROOT_PASSWORD"]
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
         readinessProbe:
           exec:
-            command: ["mysqladmin", "ping"]
+            command: ["sh", "-c", "mysqladmin ping -p$MYSQL_ROOT_PASSWORD"]
           initialDelaySeconds: 5
           periodSeconds: 2
           timeoutSeconds: 1
