@@ -37,16 +37,6 @@ spec:
             memory: "256Mi"
             cpu: "150m"
         env:
-        - name: PYTHONUNBUFFERED
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: PYTHONUNBUFFERED
-        - name: SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: app-secret
-              key: SECRET_KEY
         - name: PASSWORD
           valueFrom:
             secretKeyRef:
