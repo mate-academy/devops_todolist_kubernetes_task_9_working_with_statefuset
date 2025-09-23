@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todoapp
-  namespace: todoapp
+  namespace: mysql
 spec:
   strategy:
     type: RollingUpdate
@@ -11,11 +11,11 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: todoapp
+      app: mysql
   template:
     metadata:
       labels:
-        app: todoapp
+        app: mysql
     spec:
       containers:
       - name: todoapp
@@ -58,11 +58,20 @@ spec:
               name: mysql-secrets
               key: MYSQL_USER
         - name: DB_HOST
-          value: "mysql-0.mysql.mysql.svc.cluster.local"
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: DB_HOST
         - name: DB_PORT
-          value: "3306"
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: DB_PORT
         - name: DB_NAME
-          value: "app_db"
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: DB_NAME
         ports:
         - containerPort: 8080
         livenessProbe:
