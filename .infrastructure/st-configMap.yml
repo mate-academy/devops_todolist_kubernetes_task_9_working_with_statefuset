@@ -5,5 +5,6 @@ metadata:
   namespace: mysql
 data:
   init.sql: |
+    CREATE DATABASE todo_db;
     GRANT ALL PRIVILEGES ON todo_db.* TO 'app_user'@'%';
     USE todo_db;
