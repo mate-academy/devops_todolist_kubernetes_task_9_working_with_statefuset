@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:9.4
+          image: mysql:8.0
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -34,7 +34,7 @@ spec:
                   name: mysql-secrets
                   key: MYSQL_PASSWORD
             - name: MYSQL_DATABASE
-              value: app_db
+              value: todo_db
           ports:
             - name: mysql
               containerPort:  3306

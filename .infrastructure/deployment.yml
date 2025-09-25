@@ -50,22 +50,22 @@ spec:
         - name: MYSQL_HOST
           valueFrom:
             secretKeyRef:
-              name: mysql-secrets
+              name: app-secret
               key: MYSQL_HOST
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secrets
+              name: app-secret
               key: MYSQL_PASSWORD
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-secrets
+              name: app-secret
               key: MYSQL_USER
         - name: MYSQL_NAME
           valueFrom:
             secretKeyRef:
-              name: mysql-secrets
+              name: app-secret
               key: MYSQL_NAME
         ports:
         - containerPort: 8080
