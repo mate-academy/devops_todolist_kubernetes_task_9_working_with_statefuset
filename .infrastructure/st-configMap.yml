@@ -1,0 +1,14 @@
+version: v1
+kind: ConfigMap
+meta:
+  name: mysql-config
+  namespace: mysql
+data:
+  init.sql: |
+    |
+    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'%';
+    USE app_db;
+    CREATE TABLE counter (
+        id INT AUTO_INCREMENT PRIMARY_KEY,
+        value INT
+    );

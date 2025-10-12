@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+        containers:
+          - name: mysql
+            image: mysql:8.0
+            env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ROOT_PASSWORD
+                  name: mysql-secret
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_USER
+                  name: mysql-secret
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: mysql-secret
+            - name: MYSQL_DB
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DB
+                  name: mysql-secret
+            ports:
+              - name: mysql
+                containerPort: 3306
+            volumeMounts:
+              - mountPath: /var/lib/mysql
+                name: data
+                subPath: mysql
+              - mountPath: /docker-entrypoint-initdb.d
+                name: mysql-config
+            resources:
+              requests:
+                cpu: 300m
+                memory: 1Gi
+            livenessProbe:
+              exec:
+                command: ["mysqladmin", "ping"]
+              initialDelaySeconds: 30
+              periodSeconds: 5
+              timeoutSeconds: 3
+            readinessProbe:
+              exec:
+                command: [ "mysqladmin", "ping" ]
+              initialDelaySeconds: 5
+              periodSeconds: 3
+              timeoutSeconds: 2
+        volumes:
+          - name: mysql-config
+            configMap:
+              name: mysql-config
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 3Gi
+
