@@ -14,5 +14,5 @@ data:
         value INT
     );
     
-    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'%';
+    GRANT ALL PRIVILEGES ON app_db.* TO 'muser'@'%';
     FLUSH PRIVILEGES;

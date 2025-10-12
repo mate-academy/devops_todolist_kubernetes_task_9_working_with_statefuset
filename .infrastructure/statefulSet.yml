@@ -18,32 +18,32 @@ spec:
           - name: mysql
             image: mysql:8.0
             env:
-            - name: MYSQL_ROOT_PASSWORD
+            - name: ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_ROOT_PASSWORD
                   name: mysql-secret
-            - name: MYSQL_USER
+            - name: USER
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_USER
                   name: mysql-secret
-            - name: MYSQL_PASSWORD
+            - name: PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_PASSWORD
                   name: mysql-secret
-            - name: MYSQL_DATABASE
+            - name: NAME
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_DATABASE
                   name: mysql-secret
-            - name: MYSQL_PORT
+            - name: PORT
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_PORT
                   name: mysql-secret
-            - name: MYSQL_HOST
+            - name: HOST
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_HOST
@@ -54,7 +54,6 @@ spec:
             volumeMounts:
               - mountPath: /var/lib/mysql
                 name: data
-                subPath: mysql
               - mountPath: /docker-entrypoint-initdb.d
                 name: mysql-config
             resources:
