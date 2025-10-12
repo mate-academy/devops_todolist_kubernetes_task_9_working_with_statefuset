@@ -1,14 +1,18 @@
-version: v1
+apiVersion: v1
 kind: ConfigMap
-meta:
+metadata:
   name: mysql-config
   namespace: mysql
 data:
   init.sql: |
-    |
-    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'%';
+    CREATE DATABASE IF NOT EXISTS app_db;
+    
     USE app_db;
-    CREATE TABLE counter (
-        id INT AUTO_INCREMENT PRIMARY_KEY,
+    
+    CREATE TABLE IF NOT EXISTS counter (
+        id INT AUTO_INCREMENT PRIMARY KEY,
         value INT
     );
+    
+    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'%';
+    FLUSH PRIVILEGES;

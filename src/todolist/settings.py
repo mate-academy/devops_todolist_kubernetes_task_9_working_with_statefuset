@@ -69,9 +69,9 @@ DATABASES = {
 
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "HOST": "mysql-0.mysql.mysql.svc.cluster.local",
-        "PORT": 3306,
-        "NAME": os.getenv("MYSQL_DB"),
+        "HOST": os.getenv("MYSQL_HOST"),
+        "PORT": os.getenv("MYSQL_PORT"),
+        "NAME": os.getenv("MYSQL_DATABASE"),
         "PASSWORD": os.getenv("MYSQL_PASSWORD"),
         "USER": os.getenv("MYSQL_USER"),
     }

@@ -23,7 +23,7 @@ nodes:
 # the control plane node config
 - role: control-plane
   extraMounts:
-    - hostPath: C:/tmp
+    - hostPath: /c/tmp
       containerPath: /data
   kubeadmConfigPatches:
   - |
@@ -45,9 +45,9 @@ nodes:
 # the two workers
 - role: worker
   extraMounts:
-    - hostPath: C:/tmp
+    - hostPath: /c/tmp
       containerPath: /data
 - role: worker
   extraMounts:
-    - hostPath: C:/tmp
+    - hostPath: /c/tmp
       containerPath: /data

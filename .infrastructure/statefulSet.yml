@@ -33,10 +33,20 @@ spec:
                 secretKeyRef:
                   key: MYSQL_PASSWORD
                   name: mysql-secret
-            - name: MYSQL_DB
+            - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  key: MYSQL_DB
+                  key: MYSQL_DATABASE
+                  name: mysql-secret
+            - name: MYSQL_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PORT
+                  name: mysql-secret
+            - name: MYSQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_HOST
                   name: mysql-secret
             ports:
               - name: mysql
@@ -51,6 +61,9 @@ spec:
               requests:
                 cpu: 300m
                 memory: 1Gi
+              limits:
+                cpu: 700m
+                memory: 2Gi
             livenessProbe:
               exec:
                 command: ["mysqladmin", "ping"]
