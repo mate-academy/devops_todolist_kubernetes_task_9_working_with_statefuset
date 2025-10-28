@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: todoapp-mysql
+  namespace: mysql
+spec:
+  selector:
+    matchLabels:
+      app: todoapp-mysql
+  replicas: 3
+  serviceName: todoapp-mysql
+  template:
+    metadata:
+      labels:
+        app: todoapp-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-mysql-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-mysql-secret
+              key: MYSQL_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-mysql-secret
+              key: MYSQL_DATABASE
+        ports:
+        - name: mysql
+          containerPort: 3306
+        volumeMounts: 
+        - name: pvc-data
+          mountPath: /var/lib/mysql
+        - name: todoapp-mysql-config
+          mountPath: /docker-entrypoint-initdb.d
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["mysqladmin", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+      volumes:
+      - name: todoapp-mysql-config
+        configMap:
+          name: todoapp-mysql-config
+  volumeClaimTemplates:
+  - metadata:
+      name: pvc-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 2Gi
