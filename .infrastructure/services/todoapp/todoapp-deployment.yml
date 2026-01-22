@@ -17,9 +17,29 @@ spec:
       labels:
         app: todoapp
     spec:
+      initContainers:
+      - name: db-migrate
+        image: whatmodeprog/todoapp:3.0.1
+        command: ["python", "manage.py", "migrate"]
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_HOST
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
+        image: whatmodeprog/todoapp:3.0.1
         volumeMounts:
         - name: data
           mountPath: /app/data
@@ -47,6 +67,16 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
         ports:
         - containerPort: 8080
         livenessProbe:
