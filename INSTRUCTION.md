@@ -74,7 +74,7 @@ kubectl exec -n todoapp -it deploy/todoapp -- sh
 Then run inside the pod:
 
 ```bash
-env | findstr /R "NAME|USER|PASSWORD|HOST"
+env | grep -E "NAME|USER|PASSWORD|HOST"
 ```
 
 ## 7 Validate the app endpoints
