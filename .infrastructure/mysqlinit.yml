@@ -5,4 +5,4 @@ metadata:
   namespace: mysql
 data:
   init.sql: |
-    SELECT 1;
+    CREATE DATABASE IF NOT EXISTS appdb;

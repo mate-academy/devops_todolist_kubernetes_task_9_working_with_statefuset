@@ -26,6 +26,8 @@ spec:
           volumeMounts:
             - name: initdb
               mountPath: /docker-entrypoint-initdb.d
+            - name: data
+              mountPath: /var/lib/mysq
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
