@@ -10,9 +10,12 @@ kubectl apply -f .infrastructure/mysql-configmap.yml
 kubectl apply -f .infrastructure/mysql-service.yml
 kubectl apply -f .infrastructure/statefulSet.yml
 
-kubectl create secret generic mysql-pass \
-  --from-literal=MYSQL_USER=mate_user \
-  --from-literal=MYSQL_PASSWORD=mate_password_secret \
+echo "Creating application secret..."
+kubectl create secret generic mysql-app-credentials \
+  --from-literal=NAME=tododb \
+  --from-literal=USER=mate_user \
+  --from-literal=PASSWORD=mate_password_secret \
+  --from-literal=HOST=mysql-0.mysql-service.mysql.svc.cluster.local \
   -n mateapp --dry-run=client -o yaml | kubectl apply -f -
 
 kubectl apply -f .infrastructure/pv.yml

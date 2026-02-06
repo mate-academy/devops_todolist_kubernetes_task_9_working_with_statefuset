@@ -43,21 +43,27 @@ spec:
               key: SECRET_KEY
 
         - name: DB_NAME
-          value: "tododb"
-        - name: DB_HOST
-          value: "mysql-0.mysql-service.mysql.svc.cluster.local"
-        - name: DB_PORT
-          value: "3306"
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: MYSQL_USER
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: MYSQL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql-app-credentials
+                      key: NAME
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql-app-credentials
+                      key: USER
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql-app-credentials
+                      key: PASSWORD
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql-app-credentials
+                      key: HOST
+                - name: DB_PORT
+                  value: "3306"
 
 
         resources:
