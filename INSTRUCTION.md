@@ -46,6 +46,10 @@ After the deployment is complete, verify that the StatefulSet and Service meet a
 2. Verify Headless Service:
 `kubectl describe svc mysql -n mysql`
 
+3. Verify Init Script (ConfigMap Mount)
+Check if the init.sql file is correctly mounted from the ConfigMap into the MySQL initialization directory:
+`kubectl exec -n mysql mysql-0 -- ls /docker-entrypoint-initdb.d`
+
 ### 5. Database Credentials & Secret Validation
 The application is configured to securely read database connection details from a Kubernetes Secret named app-secret. Use the following steps to verify the data integrity and its injection into the application.
 
