@@ -60,10 +60,10 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-HOST = os.environ.get("HOST_DB", "")
-PASSWORD = os.environ.get("USER_PASSWORD", "")
-USER = os.environ.get("USER_LOGIN", "")
-NAME_DB = os.environ.get("NAME_CONNECTION_DB", "")
+HOST = os.environ.get("HOST", "mysql-0.mysql.mysql.svc.cluster.local")
+PASSWORD = os.environ.get("PASSWORD", "")
+USER = os.environ.get("USER", "")
+NAME = os.environ.get("NAME", "")
 
 
 DATABASES = {
@@ -76,7 +76,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "HOST": HOST,
         "PORT": 3306,
-        "NAME": NAME_DB,
+        "NAME": NAME,
         "PASSWORD": PASSWORD,
         "USER": USER,
     }
