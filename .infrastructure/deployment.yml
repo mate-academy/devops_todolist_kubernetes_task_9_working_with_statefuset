@@ -47,17 +47,39 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: NAME
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-db
+              key: NAME
+        - name: USER
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-db
+              key: USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-db
+              key: PASSWORD
+        - name: HOST
+          valueFrom:
+            secretKeyRef:
+              name: todoapp-db
+              key: HOST
+        - name: PORT
+          value: "3306"
         ports:
         - containerPort: 8080
         livenessProbe:
           httpGet:
-            path: api/health
+            path: /api/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: api/ready
+            path: /api/ready
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
