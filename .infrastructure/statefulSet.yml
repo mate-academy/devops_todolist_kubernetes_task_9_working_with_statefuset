@@ -53,15 +53,25 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: HOST
+        - name: USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: PASSWORD
         livenessProbe:
           exec:
-            command: ["mysqladmin","ping"]
+            command: ["/bin/sh", "-c", "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"]
           initialDelaySeconds: 30
           periodSeconds: 15
           timeoutSeconds: 5
         readinessProbe:
           exec:
-            command: ["mysqladmin","ping"]
+            command: ["/bin/sh", "-c", "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"]
           initialDelaySeconds: 30
           periodSeconds: 15
           timeoutSeconds: 5
