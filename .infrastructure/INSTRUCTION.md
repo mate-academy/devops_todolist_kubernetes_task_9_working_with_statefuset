@@ -4,7 +4,7 @@ To validate changes you have top map ports with command:
 
         kubectl get deployments -n todoapp
 
-    kubectl port-forward pod/<pod_name> 8000:8000
+    kubectl port-forward pod/<pod_name> 8080:8080
 
 Then you can go to app in your browser by http://localhost:8000 and make notes, then you can check it inside of mysql_client by command:
 
