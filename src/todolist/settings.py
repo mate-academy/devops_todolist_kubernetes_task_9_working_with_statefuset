@@ -10,15 +10,13 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+from pathlib import Path
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "")
+SECRETS_DIR = Path("/app/secrets")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -61,20 +59,27 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
+DB_HOST = (SECRETS_DIR / "HOST").read_text()
+DB_PORT = (SECRETS_DIR / "PORT").read_text()
+DB_NAME = (SECRETS_DIR / "NAME").read_text()
+DB_PASSWORD = (SECRETS_DIR / "PASSWORD").read_text()
+DB_USER = (SECRETS_DIR / "USER").read_text()
 
+
+DATABASES = {
     # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "HOST": "FVFFM3F5Q05N", 
-    #     "PORT": 3306,
-    #     "NAME":"tododb",
-    #     "PASSWORD": "my-secret-pw", 
-    #     "USER": "root",
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     # }
+
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "HOST": DB_HOST, 
+        "PORT": DB_PORT,
+        "NAME": DB_NAME,
+        "PASSWORD": DB_PASSWORD, 
+        "USER": DB_USER,
+    }
 }
 
 # Internationalization

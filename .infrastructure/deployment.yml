@@ -19,10 +19,8 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
+        image: killingrace/todoapp:3.0.3
         volumeMounts:
-        - name: data
-          mountPath: /app/data
         - name: app-secrets-volume
           mountPath: "/app/secrets"
           readOnly: true
@@ -51,20 +49,17 @@ spec:
         - containerPort: 8080
         livenessProbe:
           httpGet:
-            path: api/health
+            path: /api/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: api/ready
+            path: /api/ready
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
       - name: app-secrets-volume
         secret:
           secretName: app-secret
