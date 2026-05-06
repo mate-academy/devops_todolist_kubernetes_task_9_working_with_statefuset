@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:9.7
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secrets
+                key: MYSQL_ROOT_PASSWORD
+          - name: USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secrets
+                key: USER
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secrets
+                key: PASSWORD
+          - name: HOST
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secrets
+                key: HOST
+          - name: NAME
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secrets
+                key: NAME
+          ports:
+            - name: mysql
+              containerPort: 3306
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/mysql
+              subPath: mysql
+            - name: config-map
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            exec:
+              command: [ "mysqladmin", "ping" ]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command: [ "mysqladmin", "ping" ]
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+      volumes:
+        - name: config-map
+          configMap:
+            name: mysql-config
+  volumeClaimTemplates:
+    - metadata:
+        name: db-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
