@@ -23,26 +23,26 @@ spec:
               secretKeyRef:
                 name: mysql-secrets
                 key: MYSQL_ROOT_PASSWORD
-          - name: MYSQL_USER
+          - name: USER
             valueFrom:
               secretKeyRef:
                 name: mysql-secrets
-                key: MYSQL_USER
-          - name: MYSQL_PASSWORD
+                key: USER
+          - name: PASSWORD
             valueFrom:
               secretKeyRef:
                 name: mysql-secrets
-                key: MYSQL_PASSWORD
-          - name: MYSQL_HOST
+                key: PASSWORD
+          - name: HOST
             valueFrom:
               secretKeyRef:
                 name: mysql-secrets
-                key: MYSQL_HOST
-          - name: MYSQL_DATABASE
+                key: HOST
+          - name: NAME
             valueFrom:
               secretKeyRef:
                 name: mysql-secrets
-                key: MYSQL_DATABASE
+                key: NAME
           ports:
             - name: mysql
               containerPort: 3306
@@ -68,6 +68,9 @@ spec:
             requests:
               cpu: 500m
               memory: 1Gi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
       volumes:
         - name: config-map
           configMap:

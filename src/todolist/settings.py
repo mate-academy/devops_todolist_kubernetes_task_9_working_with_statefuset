@@ -60,10 +60,10 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-PASSWORD = os.environ.get("MYSQL_PASSWORD", "")
-USER = os.environ.get("MYSQL_USER", "")
-HOST = os.environ.get("MYSQL_HOST", "")
-NAME = os.environ.get("MYSQL_DATABASE", "")
+PASSWORD = os.environ.get("PASSWORD", "")
+USER = os.environ.get("USER", "")
+HOST = os.environ.get("HOST", "")
+NAME = os.environ.get("NAME", "")
 DATABASES = {
 
 

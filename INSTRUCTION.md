@@ -17,4 +17,11 @@ kubectl exec mysql-0 -n mysql -it -- sh
     ```
     mysql -u app_user -pPASSWORD app_db
     ```
-   and Select records from tables to validate it.
+   
+   use following command:
+   ```angular2html
+   SHOW TABlES;
+   ```
+   ```angular2html
+   DESCRIBE counter;
+   ```
