@@ -1,0 +1,26 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: todoapp
+data:
+  PYTHONUNBUFFERED: "1"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb
+  namespace: mysql
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS todoapp-db;
+    CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'userpass';
+    GRANT ALL PRIVILEGES ON `todoapp-db`.* TO 'user'@'%';
+    FLUSH PRIVILEGES;
+    USE todoapp-db;
+    CREATE TABLE IF NOT EXISTS todos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    completed BOOLEAN DEFAULT FALSE
+    );
+
