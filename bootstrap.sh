@@ -1,4 +1,4 @@
-#!/bin/
+#!/bin/bash
 
 # Exit on any error
 set -e
@@ -7,7 +7,7 @@ echo "Deployment..."
 
 # Step 1: Create kind cluster
 echo "Creating kind cluster..."
-kind create cluster --config cluster.yml
+kind create cluster --config ./cluster.yml
 
 # Step 2: Wait for cluster to be ready
 echo "Waiting for cluster to be ready..."
@@ -29,7 +29,7 @@ echo "Deploying MySQL secrets..."
 kubectl apply -f .infrastructure/secret.yml
 
 echo "Deploying MySQL ConfigMap..."
-kubectl apply -f .infrastructure/confgimap.yml
+kubectl apply -f .infrastructure/configMap.yml
 
 echo "Deploying MySQL StatefulSet and Service..."
 kubectl apply -f .infrastructure/statefulSet.yml
@@ -40,7 +40,7 @@ kubectl wait --for=condition=Ready pod -l app=mysql -n mysql --timeout=300s
 
 # Step 5: Deploy TodoApp
 echo "Deploying TodoApp..."
-kubectl apply -f deployment.yml
+kubectl apply -f .infrastructure/deployment.yml
 
 # Step 6: Wait for TodoApp to be ready
 echo "Waiting for TodoApp to be ready..."
