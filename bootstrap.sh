@@ -17,14 +17,6 @@ kubectl wait --for=condition=Ready nodes --all --timeout=120s
 echo "Deploying MySQL namespace..."
 kubectl apply -f .infrastructure/namespace.yml
 
-# Apply PersistentVolume
-echo "Creating PersistentVolume..."
-kubectl apply -f .infrastructure/pv.yml
-
-# Apply PersistentVolumeClaim
-echo "Creating PersistentVolumeClaim..."
-kubectl apply -f .infrastructure/pvc.yml
-
 echo "Deploying MySQL secrets..."
 kubectl apply -f .infrastructure/secret.yml
 
