@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: my-statefullset
+  namespace: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql-app
+  template:
+    metadata:
+      name: mysql-app
+      namespace: mysql
+      labels:
+        app: mysql-app
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: mysql-db
+          image: mysql:latest
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+          livenessProbe:
+            exec:
+              command: [ "mysqladmin", "ping" ]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command: [ "mysqladmin", "ping" ]
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: init-bd
+              mountPath: "/docker-entrypoint-initdb.d"
+      volumes:
+        - name: init-bd
+          configMap:
+            name: app-config-mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "2Gi"
+  replicas: 3
+  serviceName: headless-service
