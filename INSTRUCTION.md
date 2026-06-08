@@ -11,8 +11,10 @@
 `bootstrap.sh` applies only the manifests added or updated in this task:
 
 - `.infrastructure/statefulSet.yml` — MySQL namespace, secrets, init ConfigMap, headless Service, StatefulSet
-- `.infrastructure/db-secret.yml` — `todoapp` namespace and database connection Secret
+- `.infrastructure/db-secret.yml` — `todoapp` namespace, `app-secret`, `app-config`, PV/PVC, and database connection Secret
 - `.infrastructure/deployment.yml` — updated ToDo application Deployment
+
+The bootstrap script creates a local `kind` cluster inline (no external `cluster.yml` required).
 
 ```bash
 chmod +x bootstrap.sh

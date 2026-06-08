@@ -1,7 +1,20 @@
 #!/bin/bash
 set -e
 
-kind create cluster --config cluster.yml || true
+if ! kind get clusters 2>/dev/null | grep -q "^kind$"; then
+  cat <<'EOF' | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraMounts:
+    - hostPath: /tmp
+      containerPath: /data
+  extraPortMappings:
+  - containerPort: 30007
+    hostPort: 30007
+EOF
+fi
 
 kubectl apply -f .infrastructure/statefulSet.yml
 
