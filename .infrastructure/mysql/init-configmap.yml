@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb
+  namespace: mysql
+data:
+  init.sql: |
+    -- Runs once on first init of each MySQL pod, from /docker-entrypoint-initdb.d.
+    -- The MYSQL_USER from the Secret is created by the image entrypoint before
+    -- this script runs; here we create the application database and grant access.
+    CREATE DATABASE IF NOT EXISTS tododb
+      CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    CREATE USER IF NOT EXISTS 'todoapp'@'%' IDENTIFIED BY 'todoapp-pw';
+    GRANT ALL PRIVILEGES ON tododb.* TO 'todoapp'@'%';
+    FLUSH PRIVILEGES;
