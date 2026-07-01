@@ -51,22 +51,22 @@ spec:
           valueFrom:
             secretKeyRef:
               name: app-secret
-              key: DB_NAME
+              key: NAME
         - name: DB_USER
           valueFrom:
             secretKeyRef:
               name: app-secret
-              key: DB_USER
+              key: USER
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: app-secret
-              key: DB_PASSWORD
+              key: PASSWORD
         - name: DB_HOST
           valueFrom:
             secretKeyRef:
               name: app-secret
-              key: DB_HOST              
+              key: HOST              
         ports:
         - containerPort: 8080
         livenessProbe:
