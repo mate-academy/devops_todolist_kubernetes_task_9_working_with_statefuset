@@ -2,8 +2,6 @@
 kind create cluster --config cluster.yml
 cd .infrastructure
 kubectl apply -f namespace.yml
-kubectl create ns mysql
-kubectl config set-context --current --namespace=mysql
 kubectl apply -f clusterIp.yml
 kubectl apply -f pv.yml
 kubectl apply -f pvc.yml
