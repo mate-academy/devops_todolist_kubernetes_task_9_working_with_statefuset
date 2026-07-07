@@ -1,0 +1,110 @@
+# Validation Instructions
+
+## Prerequisites
+- Docker (or another kind-supported provider) running locally
+- [`kind`](https://kind.sigs.k8s.io/) installed
+- `kubectl` installed
+
+## 1. Deploy everything
+From the repo root:
+
+```bash
+./bootstrap.sh
+```
+
+This will:
+1. Create a kind cluster from `cluster.yml` (1 control-plane + 3 workers).
+2. Create the `mysql` and `app` namespaces.
+3. Create the `mysql-secret` Secret (`MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`).
+4. Create a `mysql-init-sql` ConfigMap from `manifests/init.sql`.
+5. Create the headless `mysql` Service.
+6. Deploy the `mysql` StatefulSet (3 replicas) and wait for it to be Ready.
+7. Create the `db-secret` Secret (`NAME`, `USER`, `PASSWORD`, `HOST`) used by the app.
+8. Deploy the `app` Deployment and wait for it to be Available.
+
+## 2. Validate the StatefulSet
+
+Check that all 3 pods are running with stable, ordered names:
+
+```bash
+kubectl get pods -n mysql -l app=mysql
+# Expect: mysql-0, mysql-1, mysql-2, all Running/Ready
+```
+
+Check the headless Service has no cluster IP and resolves each pod:
+
+```bash
+kubectl get svc mysql -n mysql
+# Expect: CLUSTER-IP = None
+
+kubectl run -it --rm dns-test --image=busybox:1.36 --restart=Never -n mysql -- \
+  nslookup mysql-0.mysql.mysql.svc.cluster.local
+```
+
+Check the Secret is mounted as env vars (not hardcoded in the pod spec):
+
+```bash
+kubectl exec -n mysql mysql-0 -- env | grep MYSQL_
+```
+
+Check probes are configured:
+
+```bash
+kubectl get statefulset mysql -n mysql -o jsonpath='{.spec.template.spec.containers[0].livenessProbe}'
+kubectl get statefulset mysql -n mysql -o jsonpath='{.spec.template.spec.containers[0].readinessProbe}'
+```
+
+Check requests/limits are set:
+
+```bash
+kubectl get statefulset mysql -n mysql -o jsonpath='{.spec.template.spec.containers[0].resources}'
+```
+
+Check `volumeClaimTemplates` created a PVC per pod:
+
+```bash
+kubectl get pvc -n mysql
+# Expect: mysql-data-mysql-0, mysql-data-mysql-1, mysql-data-mysql-2, all Bound
+```
+
+Confirm `init.sql` ran on startup (creates `appdb`, `appuser`, and a seeded `healthcheck` table):
+
+```bash
+kubectl exec -n mysql mysql-0 -- \
+  mysql -u root -p"$(kubectl get secret mysql-secret -n mysql -o jsonpath='{.data.MYSQL_ROOT_PASSWORD}' | base64 -d)" \
+  -e "SHOW DATABASES; SELECT * FROM appdb.healthcheck;"
+```
+
+## 3. Validate the application Deployment
+
+Confirm the app is reading connection details from the `db-secret` Secret and successfully connecting to `mysql-0` specifically:
+
+```bash
+kubectl get pods -n app -l app=myapp
+
+kubectl logs -n app deploy/app --tail=20
+# Expect repeated output like:
+# status                | NOW()
+# connected to mysql-0  | <timestamp>
+```
+
+Confirm the Secret's `HOST` value points at the 0-indexed pod via the headless Service DNS name:
+
+```bash
+kubectl get secret db-secret -n app -o jsonpath='{.data.HOST}' | base64 -d
+# Expect: mysql-0.mysql.mysql.svc.cluster.local
+```
+
+## 4. Tear down
+
+```bash
+kind delete cluster --name mysql-cluster
+```
+
+## Notes
+- Credentials in `manifests/01-mysql-secret.yml` and `manifests/03-app-db-secret.yml` are
+  placeholder values for local validation only — replace them (and consider using a secret
+  manager or sealed-secrets in a real environment) before using outside of this exercise.
+- Each StatefulSet replica gets its own PVC/data directory (no MySQL replication is configured
+  between `mysql-0/1/2`); the assignment only requires StatefulSet mechanics and the app
+  connecting to the 0-indexed pod, not a replicated MySQL topology.
