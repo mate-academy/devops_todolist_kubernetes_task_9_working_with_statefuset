@@ -1,26 +1,44 @@
-# INSTRUCTION.md
+# Validation Instructions
 
-# Validation
+## Steps to Validate
 
-1. Clone the repository
-2. Run the deployment script:
+### 1. Run the deployment script
 
-   ```bash
-   chmod +x bootstrap.sh
-   ./bootstrap.sh
-   ```
-3. Verify that all resources are created successfully:
+```bash
+chmod +x bootstrap.sh
+./bootstrap.sh
+```
 
-   ```bash
-   kubectl get pods -A
-   kubectl get statefulsets -n mysql
-   kubectl get svc -n mysql
-   kubectl get pvc -n mysql
-   ```
-4. Confirm that:
+### 2. Verify resources in the `mysql` namespace
 
-* The MySQL StatefulSet (todoapp-mysql) has 3 Running replicas.
-* The headless Service (mysql-headless) is created.
-* All PersistentVolumeClaims (data-todoapp-mysql-*) are bound.
-* The ToDo application is running in the todoapp namespace and successfully connected to todoapp-mysql-0:
+```bash
+kubectl get statefulset,pods,svc -n mysql
+```
 
+Verify that:
+
+- `todoapp-mysql` has **3/3** replicas running.
+- The `mysql-headless` Service exists.
+
+### 3. Verify Secrets
+
+```bash
+kubectl get secrets -n todoapp
+kubectl get secrets -n mysql
+```
+
+Verify that the required Secrets exist in both namespaces.
+
+### 4. Verify the application
+
+```bash
+kubectl get pods -n todoapp
+```
+
+Ensure the application pod is in the **Running** state.
+
+### 5. Verify database connectivity
+
+```bash
+kubectl logs deployment/todoapp -n todoapp
+```
