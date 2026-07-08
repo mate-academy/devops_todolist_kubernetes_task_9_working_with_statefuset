@@ -15,4 +15,4 @@ kubectl apply -f .infrastructure/statefulSet.yml
 kubectl rollout status statefulset/todoapp-mysql -n mysql --timeout=120s
 
 kubectl apply -f .infrastructure/deployment.yml
-kubectl apply -f .infrastructure/pod.yml
+kubectl apply -f .infrastructure/todoapp_pod.yml # ИСПРАВЛЕНО ИМЯ ФАЙЛА
