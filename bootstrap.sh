@@ -15,7 +15,7 @@ echo "==> Waiting for MySQL StatefulSet pods to become ready"
 kubectl rollout status statefulset/mysql -n mysql --timeout=300s
 
 echo "==> Deploying application configuration (todoapp namespace)"
-kubectl apply -f confgiMap.yml
+kubectl apply -f configMap.yml
 kubectl apply -f secret.yml
 kubectl apply -f db-secret.yml
 
