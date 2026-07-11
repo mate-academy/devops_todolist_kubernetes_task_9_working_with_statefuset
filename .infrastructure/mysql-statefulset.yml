@@ -51,7 +51,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - bash
+            - sh
             - "-c"
             - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
           initialDelaySeconds: 30
@@ -60,7 +60,7 @@ spec:
         readinessProbe:
           exec:
             command:
-            - bash
+            - sh
             - "-c"
             - mysql -u root -p$MYSQL_ROOT_PASSWORD -e "SELECT 1"
           initialDelaySeconds: 15
