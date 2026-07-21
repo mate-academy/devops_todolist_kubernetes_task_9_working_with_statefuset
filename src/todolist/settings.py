@@ -10,7 +10,10 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import pymysql
 
+
+pymysql.install_as_MySQLdb()
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -63,8 +66,12 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ["NAME"],
+        "USER": os.environ["USER"],
+        "PASSWORD": os.environ["PASSWORD"],
+        "HOST": os.environ["HOST"],
+        "PORT": "3306",
     }
 
     # "default": {
