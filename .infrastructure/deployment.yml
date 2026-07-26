@@ -31,8 +31,8 @@ spec:
           readOnly: true
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "150m"
+            memory: "128Mi"
+            cpu: "10m"
           limits:
             memory: "256Mi"
             cpu: "150m"
@@ -47,6 +47,23 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: NAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: NAME
+        - name: USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: PASSWORD
+        - name: HOST
+          value: "mysql-0.mysql.mysql.svc.cluster.local"
         ports:
         - containerPort: 8080
         livenessProbe:
