@@ -5,4 +5,4 @@ metadata:
   namespace: mysql
 data:
   init.sql: |
-    CREATE DATABASE IF NOT EXISTS todoapp;
+    CREATE DATABASE IF NOT EXISTS app_db;
