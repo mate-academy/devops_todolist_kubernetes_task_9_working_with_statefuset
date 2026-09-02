@@ -6,7 +6,6 @@ metadata:
 spec:
   serviceName: mysql
   replicas: 3
-
   selector:
     matchLabels:
       app: mysql
@@ -98,7 +97,6 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-
         resources:
           requests:
             storage: 1Gi

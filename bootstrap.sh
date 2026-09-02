@@ -2,8 +2,10 @@
 
 set -e
 
+
 kubectl apply -f .infrastructure/namespace.yml
 kubectl apply -f .infrastructure/mysql-namespace.yml
+
 
 kubectl apply -f .infrastructure/mysql-secret.yml
 kubectl apply -f .infrastructure/mysql-init-configmap.yml
@@ -22,12 +24,7 @@ kubectl apply -f .infrastructure/db-secret.yml
 kubectl apply -f .infrastructure/deployment.yml
 
 
-kubectl wait \
-  --for=jsonpath='{.status.phase}'=Running \
-  pod \
-  -l app=todoapp \
-  -n todoapp \
-  --timeout=180s
+kubectl rollout status deployment/todoapp -n todoapp --timeout=300s
 
 POD=$(kubectl get pods \
   -n todoapp \
