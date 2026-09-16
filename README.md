@@ -33,7 +33,7 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 
 1. Fork this repository.
 1. Use `kind` to spin up a cluster from a `cluster.yml` configuration file.
-1. Create a `statefulSet.yml` file for `StatefulSet` to manage MySQL.
+1. Create a `statefulSet-tr.yml` file for `StatefulSet` to manage MySQL.
 1. `StatefulSet` requirement:
     1. `StatefulSet` should be deployed in a `mysql` namespace
     1. `StatefulSet` should have 3 replicas
