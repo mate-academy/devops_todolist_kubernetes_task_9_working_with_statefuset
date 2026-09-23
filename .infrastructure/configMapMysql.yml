@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-data
+  namespace: mysql
+data: 
+  init.sql: | 
+    CREATE DATABASE IF NOT EXISTS todolist;
+    GRANT ALL PRIVILEGES ON todolist.* TO 'sql_User'@'%';
