@@ -20,7 +20,7 @@ kubectl get pods -n todoapp
 
 5. Forward the application port:
 
-kubectl port-forward service/todoapp-nodeport 8080:80 -n todoapp
+kubectl port-forward service/todoapp-service 8080:80 -n todoapp
 
 6. Open the application:
 
