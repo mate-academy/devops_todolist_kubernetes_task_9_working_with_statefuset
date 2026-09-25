@@ -6,3 +6,6 @@ metadata:
 data:
   init.sql: |
     CREATE DATABASE tododb;
+    CREATE USER 'danil%^!%()'@'%' IDENTIFIED BY '1239778251jj';
+    GRANT ALL PRIVILEGES ON tododb.* TO 'danil%^!%()'@'%';
+    FLUSH PRIVILEGES;
