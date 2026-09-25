@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: mysql-config
+  namespace: mysql
+data:
+  init.sql: |
+    CREATE DATABASE tododb;
+    CREATE USER 'daniil&^!(%'@'%' IDENTIFIED BY '1239778251jj';
+    GRANT ALL PRIVILEGES ON tododb.* TO 'daniil&^!(%'@'%';
+    FLUSH PRIVILEGES;
