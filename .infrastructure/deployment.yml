@@ -44,6 +44,11 @@ spec:
             configMapKeyRef:
               name: app-config
               key: PYTHONUNBUFFERED
+        - name: PYTHONDONTWRITEBYTECODE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: PYTHONDONTWRITEBYTECODE
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:

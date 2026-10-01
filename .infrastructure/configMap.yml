@@ -5,5 +5,10 @@ metadata:
   namespace: todoapp
   labels:
     app: todoapp
+    app.kubernetes.io/name: todoapp
+    app.kubernetes.io/component: configuration
+  annotations:
+    description: "Non-sensitive Django runtime configuration"
 data:
   PYTHONUNBUFFERED: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
