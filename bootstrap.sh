@@ -21,7 +21,7 @@ kubectl apply -f .infrastructure/mysql-init.yml
 kubectl apply -f .infrastructure/mysql-service.yml
 kubectl apply -f .infrastructure/statefulSet.yml
 
-kubectl apply -f .infrastructure/confgiMap.yml
+kubectl apply -f .infrastructure/configMap.yml
 kubectl apply -f .infrastructure/app-secret.yml
 kubectl apply -f .infrastructure/deployment.yml
 kubectl apply -f .infrastructure/clusterIp.yml
