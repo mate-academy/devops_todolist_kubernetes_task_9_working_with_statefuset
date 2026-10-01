@@ -19,16 +19,18 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
-        volumeMounts:
-        - name: data
-          mountPath: /app/data
-        - name: app-secrets-volume
-          mountPath: "/app/secrets"
-          readOnly: true
-        - name: app-config-volume
-          mountPath: "/app/configs"
-          readOnly: true
+        image: todoapp:task9
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/sh
+        - -c
+        args:
+        - |
+          until python manage.py migrate --noinput; do
+            echo "MySQL is not ready yet; retrying in 5 seconds..."
+            sleep 5
+          done
+          exec python manage.py runserver 0.0.0.0:8080
         resources:
           requests:
             memory: "256Mi"
@@ -42,32 +44,52 @@ spec:
             configMapKeyRef:
               name: app-config
               key: PYTHONUNBUFFERED
+        - name: PYTHONDONTWRITEBYTECODE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: PYTHONDONTWRITEBYTECODE
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: NAME
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: NAME
+        - name: USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: PASSWORD
+        - name: HOST
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: HOST
         ports:
         - containerPort: 8080
+        startupProbe:
+          httpGet:
+            path: /api/health
+            port: 8080
+          periodSeconds: 5
+          failureThreshold: 60
         livenessProbe:
           httpGet:
-            path: api/health
+            path: /api/health
             port: 8080
-          initialDelaySeconds: 60
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: api/ready
+            path: /api/ready
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
-      - name: app-secrets-volume
-        secret:
-          secretName: app-secret
-      - name: app-config-volume
-        configMap:
-          name: app-config

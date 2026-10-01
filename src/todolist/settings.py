@@ -18,7 +18,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "")
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "insecure-local-development-key-do-not-use-in-production"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -61,21 +63,27 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
 
-    # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "HOST": "FVFFM3F5Q05N", 
-    #     "PORT": 3306,
-    #     "NAME":"tododb",
-    #     "PASSWORD": "my-secret-pw", 
-    #     "USER": "root",
-    # }
-}
+if all(os.environ.get(name) for name in ("NAME", "USER", "PASSWORD", "HOST")):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": os.environ["HOST"],
+            "PORT": os.environ.get("PORT", "3306"),
+            "NAME": os.environ["NAME"],
+            "USER": os.environ["USER"],
+            "PASSWORD": os.environ["PASSWORD"],
+        }
+    }
+else:
+    # Keep local development simple: Kubernetes supplies all four variables
+    # from app-secret, while a developer can still run the app with SQLite.
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

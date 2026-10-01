@@ -1,58 +1,60 @@
-# Django ToDo list
+# Django ToDo + MySQL StatefulSet
 
-This is a to-do list web application with the basic features of most web apps, i.e., accounts/login, API, and interactive UI. To do this task, you will need:
+This learning project runs a Django ToDo application in Kubernetes and stores its
+data in MySQL. The local cluster is created with `kind`.
 
-- CSS | [Skeleton](http://getskeleton.com/)
-- JS  | [jQuery](https://jquery.com/)
+## What is included
 
-## Explore
+- a three-replica MySQL `StatefulSet` in the `mysql` namespace;
+- one persistent volume claim per MySQL Pod;
+- MySQL liveness and readiness probes plus CPU/memory requests and limits;
+- a headless Service that gives Pods stable DNS names such as
+  `mysql-0.mysql-service.mysql.svc.cluster.local`;
+- an initialization SQL file mounted at `/docker-entrypoint-initdb.d`;
+- a Django Deployment that reads `NAME`, `USER`, `PASSWORD`, and `HOST` from a
+  Kubernetes Secret and connects specifically to `mysql-0`;
+- a NodePort Service available at <http://localhost:30007>;
+- an idempotent `bootstrap.sh` that creates the cluster, builds and loads the
+  application image, and applies the manifests.
 
-Try it out by installing the requirements (the following commands work only with Python 3.8 and higher, due to Django 4):
+> The credentials in `.infrastructure/*.yml` are demonstration values for a
+> local learning cluster. Do not use them in a real environment or commit real
+> passwords to Git.
 
+## Quick start
+
+Prerequisites: Docker must be running, and `kind` and `kubectl` must be installed.
+
+```bash
+chmod +x bootstrap.sh
+./bootstrap.sh
 ```
+
+When both rollouts finish, open <http://localhost:30007>.
+
+For a step-by-step explanation, validation commands, persistence test, and
+cleanup instructions, see [INSTRUCTION.md](INSTRUCTION.md).
+
+## Run without Kubernetes
+
+When the four database environment variables are absent, Django deliberately
+falls back to SQLite so the original application remains easy to explore.
+
+```bash
+cd src
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-Create a database schema:
-
-```
 python manage.py migrate
-```
-
-And then start the server (default is http://localhost:8000):
-
-```
+python manage.py test
 python manage.py runserver
 ```
 
-You can now browse the [API](http://localhost:8000/api/) or start on the [landing page](http://localhost:8000/).
+Then open <http://localhost:8000> or <http://localhost:8000/api/>.
 
-## Task
+## Important limitation
 
-Create a Kubernetes manifest for a pod that will contain a ToDo app container:
-
-1. Fork this repository.
-1. Use `kind` to spin up a cluster from a `cluster.yml` configuration file.
-1. Create a `statefulSet.yml` file for `StatefulSet` to manage MySQL.
-1. `StatefulSet` requirement:
-    1. `StatefulSet` should be deployed in a `mysql` namespace
-    1. `StatefulSet` should have 3 replicas
-    3. `StatefulSet` is reading sensitive data from a secret:
-        1. `MYSQL_ROOT_PASSWORD`
-        1. `MYSQL_USER`
-        1. `MYSQL_PASSWORD`
-    4. `StatefulSet` pods should have a `livenessProbe` and `readinessProbe`
-    5. `StatefulSet` pods should have `requests` and `limits` for `CPU` and `Memory`
-    6. MySQL db should be inited from an `init.sql` that should be propagated as a mounted volume in `/docker-entrypoint-initdb.d`
-    7. `StatefulSet` should have `volumeClaimTemplates`
-    8. `StatefulSet` should have a headless `Service` to expose db pods
-1. `Deployment` requirements:
-    1. Update your application so it can connect to a 0 indexed db pod (`mysql-0`)
-    2. The application should read db connection information from a `Secret`:
-        1. `NAME`
-        2. `USER`
-        3. `PASSWORD`
-        4. `HOST`
-1. `bootstrap.sh` should contain all the commands to deploy all the required resources in the cluster
-1. `INSTRUCTION.md` should have instructions on how to validate the changes
-1. Create PR with your changes and attach it for validation on a platform.
+The assignment asks for three MySQL replicas, but a plain MySQL image does not
+automatically replicate data between them. These are three independent MySQL
+servers with separate disks. Django intentionally uses only `mysql-0`. Real
+high-availability MySQL needs replication technology or an operator.
