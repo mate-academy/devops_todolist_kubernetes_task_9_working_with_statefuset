@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: app-config
   namespace: todoapp
+  labels:
+    app: todoapp
 data:
   PYTHONUNBUFFERED: "1"
