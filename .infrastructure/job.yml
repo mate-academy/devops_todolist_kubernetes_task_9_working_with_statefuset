@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrate
+  namespace: todoapp
+spec:
+  template:
+    spec:
+      containers:
+      - name: job-db-migrate
+        image: hrechukhao/todoapp:5.1.1
+        command: ["python", "manage.py", "migrate"]
+        env:
+          - name: NAME
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: NAME
+          - name: USER
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: USER
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: PASSWORD
+          - name: PORT
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: PORT
+          - name: HOST
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: HOST
+      restartPolicy: Never
+  backoffLimit: 3
