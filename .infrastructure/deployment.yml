@@ -19,10 +19,8 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
+        image: 666phx/todoapp:5.0.1
         volumeMounts:
-        - name: data
-          mountPath: /app/data
         - name: app-secrets-volume
           mountPath: "/app/secrets"
           readOnly: true
@@ -47,6 +45,26 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: NAME
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: NAME
+        - name: USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: PASSWORD
+        - name: HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: HOST
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -62,9 +80,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
       - name: app-secrets-volume
         secret:
           secretName: app-secret
