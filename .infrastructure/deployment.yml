@@ -19,10 +19,8 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
+        image: kkurama/todoapp:5.0.0
         volumeMounts:
-        - name: data
-          mountPath: /app/data
         - name: app-secrets-volume
           mountPath: "/app/secrets"
           readOnly: true
@@ -36,6 +34,9 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "150m"
+        envFrom:
+        - secretRef:
+            name: db-secret
         env:
         - name: PYTHONUNBUFFERED
           valueFrom:
@@ -53,7 +54,7 @@ spec:
           httpGet:
             path: api/health
             port: 8080
-          initialDelaySeconds: 60
+          initialDelaySeconds: 90
           periodSeconds: 5
         readinessProbe:
           httpGet:
@@ -62,9 +63,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
       - name: app-secrets-volume
         secret:
           secretName: app-secret
