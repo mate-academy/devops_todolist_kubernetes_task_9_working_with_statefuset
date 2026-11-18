@@ -19,10 +19,9 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: ikulyk404/todoapp:3.0.0
+        image: nikolayhoncharenko/kube2py:3.0.1
+        command: ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8080"]
         volumeMounts:
-        - name: data
-          mountPath: /app/data
         - name: app-secrets-volume
           mountPath: "/app/secrets"
           readOnly: true
@@ -47,6 +46,26 @@ spec:
             secretKeyRef:
               name: app-secret
               key: SECRET_KEY
+        - name: HOST
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: HOST
+        - name: NAME
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: NAME
+        - name: USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: PASSWORD
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -62,9 +81,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: pvc-data
       - name: app-secrets-volume
         secret:
           secretName: app-secret
